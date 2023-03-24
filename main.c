@@ -121,10 +121,7 @@ int main(){
 
     extern int emptyBoardMatrix[5][5];
 
-    printLogo(5);
-    printEmptyLines(3);
-    printCredits();
-    printEmptyLines(3);
+    toggleFullscreen();
 
     // Creates the empty board matrix
     for (int i = 0; i < 5; i++) {
@@ -150,13 +147,15 @@ int main(){
 
 
 
+    printLogo(0);
+    printCredits(36);
+
+    printPlayerBoard(40, P1BoardMatrix, P1SideBoardMatrix);    
 
 
     // --- TESTING ---
 
-    //randomizeBoard(P1BoardMatrix);
-
-    printPlayerBoard(P1BoardMatrix, P1SideBoardMatrix);
+    scanf("press enter to continue...");
     
     return 0;
 }

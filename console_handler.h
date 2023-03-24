@@ -1,6 +1,7 @@
-//#include <stdio.h>
-//#include <stdlib.h>
 #include <windows.h>
+
+// Fix console width to center the game assets
+CONST SHORT consoleWidth = 214;
 
 // Creates a 5x5 layout of the empty board and empty side board
 int emptyBoardMatrix[5][5] = {0};
@@ -140,6 +141,9 @@ const char *credits[2] = {
 // [TBF] = To be fixed
 
 
+// Toggles fullscreen mode
+void toggleFullscreen();
+
 // Clears the console [TBM]
 void clearConsole();
 
@@ -149,24 +153,31 @@ void consolePointer(int x, int y);
 // Changes the console text and background colors
 void consoleColor(int color, int background);
 
-// Prints empty lines [TBR]
-void printEmptyLines(int lines);
+// Prints the logo
+void printLogo(int y);
 
-// Prints the logo [TBM]
-void printLogo(int displacement);
+// Prints the credits
+void printCredits(int y);
 
-// Prints the credits [TBM]
-void printCredits();
-
-// Prints the tile line [TBR]
+// Prints the tile line
 void printTileLine(int tile, int line);
 
 // Prints the board [TBM]
-void printPlayerBoard(int board[5][5], int sideBoard[5][5]);
+void printPlayerBoard(int y, int board[5][5], int sideBoard[5][5]);
 
 
 
 // --- CONSOLE AND DISPLAY FUNCTIONS ---
+
+// Toggles fullscreen mode
+void toggleFullscreen()
+{
+    keybd_event(VK_MENU,0x38,0,0); // Press 'ALT'
+    keybd_event(VK_RETURN,0x1c,0,0); // Press 'ENTER'
+    keybd_event(VK_RETURN,0x1c,KEYEVENTF_KEYUP,0); // Release 'ENTER'
+    keybd_event(VK_MENU,0x38,KEYEVENTF_KEYUP,0); // Release 'ALT'
+}
+
 
 // Clears the console using adequate commands for Windows and Linux
 void clearConsole() {
@@ -187,39 +198,36 @@ void consolePointer(int x, int y) {
 }
 
 // Changes the console text and background colors
-void color (int textColor, int backgroundColor)
+void consoleColor (int textColor, int backgroundColor)
 {
     HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(H, backgroundColor*16+textColor);
 }
 
-// Prints empty lines
-void printEmptyLines(int lines) {
-    for (int i = 0; i < lines; i++) {
-        printf("\n");
-    }
-}
-
 
 // Prints the logo line by line
-void printLogo(int displacement) {  
+void printLogo(int y) {
+    int x = consoleWidth/2 - strlen(logoSprite[0])/2;
+    consolePointer(x, y);
+    consoleColor(3, 0);
     for (int i = 0; i < 35; i++) {
-
-        // Prints the displacement
-        for (int i = 0; i < displacement; i++) {
-        printf(" ");
-        }
-
-        // Prints the line
-        printf("%s\n", logoSprite[i]);
+        consolePointer(x, y+i);
+        printf("%s", logoSprite[i]);
     }
+    consoleColor(15, 0);
 }
 
 
 // Prints the credits
-void printCredits() {
-    printf("%s\n", credits[0]);
-    printf("%s\n", credits[1]);
+void printCredits(int y) {
+    int x = consoleWidth/2 - strlen(credits[0])/2;
+
+    consolePointer(x, y);
+    printf("%s", credits[0]);
+
+    x = consoleWidth/2 - strlen(credits[1])/2;
+    consolePointer(x, y+1);
+    printf("%s", credits[1]);
 }
 
 
@@ -231,15 +239,20 @@ void printTileLine(int tile, int line) {
 
 // Prints the main board (the 5x5 matrix) from the matrix array using the printTileLine function
 // This functions draws each line in 3 lines of characters
-void printPlayerBoard(int board[5][5], int sideBoard[5][5]) {
+void printPlayerBoard(int y, int board[5][5], int sideBoard[5][5]) {
+
+    int x = consoleWidth/2 - 85/2;
 
     // Prints the column numbers
-    printf("                                                 1       2       3       4       5");
-    printf("\n                                                 v       v       v       v       v");
+    consolePointer(x+49, y);
+    printf("1       2       3       4       5");
+    consolePointer(x+49, y+1);
+    printf("v       v       v       v       v");
 
     // Prints the board
+    consolePointer(x, y+2);
     for (int i = 0; i < 5; i++) {
-        printf("\n");
+        print("\n");
         for (int j = 0; j < 3; j++) {
 
             // Prints the row number
