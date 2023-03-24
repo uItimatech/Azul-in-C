@@ -252,7 +252,7 @@ void printPlayerBoard(int y, int board[5][5], int sideBoard[5][5]) {
     // Prints the board
     consolePointer(x, y+2);
     for (int i = 0; i < 5; i++) {
-        print("\n");
+        printf("\n");
         for (int j = 0; j < 3; j++) {
 
             // Prints the row number
