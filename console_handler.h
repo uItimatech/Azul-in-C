@@ -1,3 +1,7 @@
+//#include <stdio.h>
+//#include <stdlib.h>
+#include <windows.h>
+
 // Creates a 5x5 layout of the empty board and empty side board
 int emptyBoardMatrix[5][5] = {0};
 int emptySideBoardMatrix[5][5] = {0};
@@ -130,17 +134,32 @@ const char *credits[2] = {
 
 // --- PROTOTYPES ---
 
+
+// Clears the console [TBM]
 void clearConsole();
 
+// Places the console pointer at the given coordinates
+void consolePointer(int x, int y);
+
+// Changes the console text and background colors
+void consoleColor(int color, int background);
+
+// Prints empty lines [TBR]
 void printEmptyLines(int lines);
 
+// Prints the logo [TBM]
 void printLogo(int displacement);
 
+// Prints the credits [TBM]
 void printCredits();
 
+// Prints the tile line [TBR]
 void printTileLine(int tile, int line);
 
+// Prints the board [TBM]
 void printPlayerBoard(int board[5][5], int sideBoard[5][5]);
+
+
 
 // --- CONSOLE AND DISPLAY FUNCTIONS ---
 
@@ -153,6 +172,23 @@ void clearConsole() {
     #endif
 }
 
+// Places the console pointer at the given coordinates
+void consolePointer(int x, int y) {
+    HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD pos; // Structured type defined in windows.h
+
+    pos.X=x;
+    pos.Y=y;
+
+    SetConsoleCursorPosition(hStdout, pos);
+}
+
+// Changes the console text and background colors
+void color (int textColor, int backgroundColor)
+{
+    HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(H, backgroundColor*16+textColor);
+}
 
 // Prints empty lines
 void printEmptyLines(int lines) {
