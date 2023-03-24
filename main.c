@@ -160,20 +160,3 @@ int main(){
     
     return 0;
 }
-
-
-
-
-//TODO:
-//- Current player and score indicator
-//- Score calculator
-//- Tile bank
-//- Tile factories
-//- End of game detection
-//- End of game screen
-//- Full game reset
-//- Game 'menu' (start, options, read rules, exit) with game logo
-//- Player interaction (select tile, select position, etc)
-//- Table center bank
-//- Player side boards fill restrictions
-//- Player automatic negative score

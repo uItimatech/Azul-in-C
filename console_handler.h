@@ -134,6 +134,11 @@ const char *credits[2] = {
 
 // --- PROTOTYPES ---
 
+// [TBM] = To be modified
+// [TBR] = To be removed
+// [TBD] = To be done
+// [TBF] = To be fixed
+
 
 // Clears the console [TBM]
 void clearConsole();
@@ -175,11 +180,9 @@ void clearConsole() {
 // Places the console pointer at the given coordinates
 void consolePointer(int x, int y) {
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD pos; // Structured type defined in windows.h
-
+    COORD pos; // Struct type defined in windows.h
     pos.X=x;
     pos.Y=y;
-
     SetConsoleCursorPosition(hStdout, pos);
 }
 

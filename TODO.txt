@@ -1,0 +1,16 @@
+A FAIRE:
+-Indicateur du joueur actuel et de son score
+-Calculateur de score (cf. règles, calculé à chaque fin de tour)
+-'Sac' virtuel de tuiles (liste de tuiles avec n nombres de tuiles de chaque couleur et mélange aléatoire)
+-Usines de tuiles (listes prennant sur demande d'une fonction 4 tuiles depuis le sac virtuel
+-Banque de centre de table (liste des tuiles provennant des usines et n'ayant pas été choisies par le joueur)
+-Jeton joueur prioritaire (entier représentant quel joueur sera le premier à commencer au prochain tour. 
+ (Il sera attribué au premier joueur prennant des tuiles depuis le centre de table à chaque tour et prendra la valeur 0 après et tant qu'il n'est pas attribué à nouveu.)
+-Détection de fin de jeu (lorsque 2 lignes de tuiles sont remplies sur le plateau d'un joueur. Est déclenchée à chaque fin de tour)
+-Ecran de fin de jeu (vainqueur, scores, options pour recommencer/quitter)
+-Fonction de réinitialisation du jeu (à terminer)
+-Menu principal (lancer une partie, options, (lire les règles), quitter)
+-Base interactions joueur (détection ligne souris + détection touches haut/bas/numéros)
+-Interactions joueur (sélectionner des tuiles dans les banques/usines, les placer)
+-Restriction d'interactions (va avec les interactions joueur)
+-Score négatif automatique (lorsque le joueur prends des tuiles qu'il ne peut placer, celles-ci lui retirent des point (cf. règles))
