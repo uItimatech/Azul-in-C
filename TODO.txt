@@ -1,7 +1,5 @@
 A FAIRE: (globalement par ordre de priorité)
 
--Modifier les fonctions d'affichage pour passer en affichage absolu au lieu de relatif (prendre exemple sur le jeu d'échecs)
-
 -'Sac' virtuel de tuiles (liste de tuiles avec n nombres de tuiles de chaque couleur et mélange aléatoire)
 -Usines de tuiles (listes prennant sur demande d'une fonction 4 tuiles depuis le sac virtuel
 -Banque de centre de table (liste des tuiles provennant des usines et n'ayant pas été choisies par le joueur)
@@ -21,3 +19,7 @@ A FAIRE: (globalement par ordre de priorité)
 -Ecran de fin de jeu (vainqueur, scores, options pour recommencer/quitter)
 -Menu principal (lancer une partie, options, (lire les règles), quitter)
 -Options supplémentaire (facultatif; nombre de joueurs, mode de jeu)
+
+TERMINE:
+
+-Modifier les fonctions d'affichage pour passer en affichage absolu au lieu de relatif (prendre exemple sur le jeu d'échecs)

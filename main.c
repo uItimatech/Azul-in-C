@@ -147,10 +147,11 @@ int main(){
 
 
 
-    printLogo(0);
-    printCredits(36);
+    printLogo(2);
+    printCredits(38);
 
-    printPlayerBoard(40, P1BoardMatrix, P1SideBoardMatrix);    
+    printGameBoard(42, P1BoardMatrix);
+    printSideBoard(42, P1SideBoardMatrix);
 
 
     // --- TESTING ---

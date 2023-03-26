@@ -1,15 +1,18 @@
+#include <stdio.h>
 #include <windows.h>
 
-// Fix console width to center the game assets
-CONST SHORT consoleWidth = 214;
 
 // Creates a 5x5 layout of the empty board and empty side board
 int emptyBoardMatrix[5][5] = {0};
 int emptySideBoardMatrix[5][5] = {0};
 
 
+// Fix console width to center the game assets
+// Should be automated in the future
+const short consoleWidth = 214; // 214 for 1920x1080, 174 for 1280x720
+
 // Stores the tiles in an array of matrices
-const char *tileSprites[17][3] = {
+const char *tileSprites[12][3] = {
     {// BLANK TILE
         "|     |",
         "|     |",
@@ -57,30 +60,54 @@ const char *tileSprites[17][3] = {
         "  Tuq  ",
         ".     ."
     },{
-        ".     .",
-        "  Blu  ",
-        ".     ."
-    },{
-        ".     .",
-        "  Yel  ",
-        ".     ."
-    },{
-        ".     .",
-        "  Red  ",
-        ".     ."
-    },{
-        ".     .",
-        "  Blk  ",
-        ".     ."
-    },{
-        ".     .",
-        "  Tuq  ",
-        ".     ."
-    },{
         "       ",
         "       ",
         "       "
     }
+};
+
+const int tileColors[12][2] = {
+    // Format: {BACKGROUND COLOR, TEXT COLOR}
+    {// BLANK TILE
+        0,
+        8
+    },{// BLUE TILE
+        1,
+        9
+    },{// YELLOW TILE
+        14,
+        6
+    },{// RED TILE
+        4,
+        12
+    },{// BLACK TILE
+        16,
+        1
+    },{// TURQUOISE TILE
+        3,
+        7
+    },
+    // EMPTY TILES (FOR THE EMPTY BOARD LAYOUT)
+    {
+        1,
+        9
+    },{
+        14,
+        6
+    },{
+        4,
+        12
+    },{
+        16,
+        1
+    },{
+        3,
+        7
+    },{
+        0,
+        0
+    }
+
 };
 
 // Stores the logo
@@ -119,7 +146,7 @@ const char *logoSprite[35] = {
     "                                                           ,%/    (#                                                            ",
     "                                                              (&%*                                                              ",
     "                                                             .%#%/                                                              ",
-    "                                                              .&#*/                                                             "
+    "                                                              .&/.                                                              ",
 };
 
 
@@ -129,16 +156,21 @@ const char *credits[2] = {
     "This game is licensed under the GNU General Public License v3.0"
 };
 
-
+// Stores the menu buttons
+const char *menuButtons[8] = {
+    "Play",
+    "Options",
+    "Rules",
+    "Quit",
+    "- Play -",
+    "- Options -",
+    "- Rules -",
+    "- Quit -"
+};
 
 
 
 // --- PROTOTYPES ---
-
-// [TBM] = To be modified
-// [TBR] = To be removed
-// [TBD] = To be done
-// [TBF] = To be fixed
 
 
 // Toggles fullscreen mode
@@ -159,13 +191,14 @@ void printLogo(int y);
 // Prints the credits
 void printCredits(int y);
 
-// Prints the tile line
-void printTileLine(int tile, int line);
+// Prints the given title at the given coordinates
+void printTitle(int tile, int x, int y);
 
-// Prints the board [TBM]
-void printPlayerBoard(int y, int board[5][5], int sideBoard[5][5]);
+// Prints the main 5x5 board for the given player
+void printGameBoard(int y, int board[5][5]);
 
-
+// Prints the side board for the given player
+void printSideBoard(int y, int board[5][5]);
 
 // --- CONSOLE AND DISPLAY FUNCTIONS ---
 
@@ -214,7 +247,7 @@ void printLogo(int y) {
         consolePointer(x, y+i);
         printf("%s", logoSprite[i]);
     }
-    consoleColor(15, 0);
+    consoleColor(15, 0); // Resets the color
 }
 
 
@@ -230,75 +263,77 @@ void printCredits(int y) {
     printf("%s", credits[1]);
 }
 
+// Prints the the given tile at the given coordinates
+void printTile(int tile, int x, int y) {
+    consolePointer(x, y);
+    for (int i = 0; i < 3; i++) {
+        consoleColor(tileColors[tile][1], tileColors[tile][0]); // Sets the color of the tile from the tileColors array
+        consolePointer(x, y+i);
+        printf("%s", tileSprites[tile][i]);
+        consoleColor(0, 0);
+        printf("_"); // Prints an invisible character to avoid color bleeding to the next line
+    }
+    consoleColor(15, 0); // Resets the color
+}   
 
-// Prints the nth line of the mth tile
-void printTileLine(int tile, int line) {
-    printf("%s ", tileSprites[tile][line]);
-}
-
-
-// Prints the main board (the 5x5 matrix) from the matrix array using the printTileLine function
-// This functions draws each line in 3 lines of characters
-void printPlayerBoard(int y, int board[5][5], int sideBoard[5][5]) {
-
-    int x = consoleWidth/2 - 85/2;
+// Prints the main 5x5 board for the given player
+void printGameBoard(int y, int board[5][5]) {
+    int x = consoleWidth/2 - 85/2 + 42;
 
     // Prints the column numbers
-    consolePointer(x+49, y);
+    consolePointer(x+6, y);
     printf("1       2       3       4       5");
-    consolePointer(x+49, y+1);
+    consolePointer(x+6, y+1);
     printf("v       v       v       v       v");
 
     // Prints the board
     consolePointer(x, y+2);
     for (int i = 0; i < 5; i++) {
-        printf("\n");
-        for (int j = 0; j < 3; j++) {
 
-            // Prints the row number
-            if (j == 1) {
-                printf("%d> ", i+1);
+        // Prints the row arrows
+        consolePointer(x, y+3+i*3);
+        printf("->");
+        
+        for (int j = 0; j < 5; j++) {
+            // If the tile is empty, prints from the empty tile sprites
+            if (board[i][j] == 0) {
+                printTile(emptyBoardMatrix[i][j], x+3+j*8, y+2+i*3);
             }
             else {
-                printf("   ");
+                printTile(board[i][j], x+3+j*8, y+2+i*3);
             }
+        }
+    }
+}
 
-            // SIDE BOARD
-            for (int k = 0; k < 5; k++) {
-                // If the tile is 0, prints from the emptyTiles array
-                if (sideBoard[i][k] == 0) {
-                    if (emptySideBoardMatrix[i][k] == 0) {
-                        printTileLine(16, j);
-                    }
-                    else {
-                        printTileLine(0, j);
-                    }
+// Prints the side board for the given player
+void printSideBoard(int y, int board[5][5]) {
+    int x = consoleWidth/2 - 85/2 - 2;
+
+    // Prints the side board
+    consolePointer(x, y+2);
+    for (int i = 0; i < 5; i++) {
+
+        // Prints the row numbers
+        consolePointer(x, y+3+i*3);
+        printf("%d", i+1);
+        consolePointer(x+1, y+3+i*3);
+        printf(">");
+
+        for (int j = 0; j < 5; j++) {
+            //printTile(board[i][j], x+3+j*8, y+2+i*3);
+            // If the tile is 0, prints from the emptyTiles array
+            if (board[i][j] == 0) {
+                if (emptySideBoardMatrix[i][j] == 0) {
+                    printTile(11, x+3+j*8, y+2+i*3);
                 }
                 else {
-                    printTileLine(sideBoard[i][k], j);
+                    printTile(0, x+3+j*8, y+2+i*3);
                 }
-            }
-
-            // Prints arrows between the main board and the side board
-            if (j == 1) {
-                printf("-> ");
             }
             else {
-                printf("   ");
+                printTile(board[i][j], x+3+j*8, y+2+i*3);
             }
-
-            // MAIN BOARD
-            for (int k = 0; k < 5; k++) {
-                // If the tile is 0, prints from the emptyTiles array
-                if (board[i][k] == 0) {
-                    printTileLine(emptyBoardMatrix[i][k]+5, j);
-                }
-                else {
-                    printTileLine(board[i][k], j);
-                }
-            }
-
-            printf("\n");
         }
     }
 }
