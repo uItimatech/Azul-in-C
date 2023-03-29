@@ -147,14 +147,14 @@ int main(){
 
 
 
+    // --- TESTING ---
+
     printLogo(2);
     printCredits(38);
 
+    printBackground(42);
     printGameBoard(42, P1BoardMatrix);
     printSideBoard(42, P1SideBoardMatrix);
-
-
-    // --- TESTING ---
 
     scanf("press enter to continue...");
     
