@@ -6,29 +6,7 @@
 // Custom libraries
 #include "console_handler.h"
 #include "tile_handler.h"
-
-
-
-
-// --- GLOBAL VARIABLES & CHARACTER SPRITES ---
-
-int gamemode = 0; // 0 = default, 1 = free tile placement NOT IMPLEMENTED YET
-int playerCount = 4; // NOT IMPLEMENTED YET
-
-int currentPlayer = 0;
-
-// Creates 5x5 matrices of 0s
-int P1BoardMatrix[5][5] = {0}, P2BoardMatrix[5][5] = {0}, P3BoardMatrix[5][5] = {0}, P4BoardMatrix[5][5] = {0};
-int P1SideBoardMatrix[5][5] = {0}, P2SideBoardMatrix[5][5] = {0}, P3SideBoardMatrix[5][5] = {0}, P4SideBoardMatrix[5][5] = {0};
-
-// Creates the scores
-int scoreMatrix[4] = {0};
-
-// Creates the tile bank
-int tileBank[5] = {0};
-
-
-
+#include "game_handler.h"
 
 
 
@@ -36,46 +14,15 @@ int tileBank[5] = {0};
 
 // --- PROTOTYPES ---
 
-void resetGame();
 
+// FOR TESTING PURPOSES ONLY, IS NOT USED IN THE GAME
 void randomizeBoard(int *board[5][5]);
-
-int isValidMove(int board[5][5], int tile, int row, int col);
-
-void placeTile(int *board[5][5], int tile, int row, int col);
 
 
 
 
 
 // --- FUNCTIONS ---
-
-
-void resetGame() {
-    // Resets the board matrices
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            P1BoardMatrix[i][j] = 0;
-            P2BoardMatrix[i][j] = 0;
-            P3BoardMatrix[i][j] = 0;
-            P4BoardMatrix[i][j] = 0;
-        }
-    }
-    // Resets the side board matrices
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            P1SideBoardMatrix[i][j] = 0;
-            P2SideBoardMatrix[i][j] = 0;
-            P3SideBoardMatrix[i][j] = 0;
-            P4SideBoardMatrix[i][j] = 0;
-        }
-    }
-
-    // Resets the scores
-    for (int i = 0; i < 4; i++) {
-        scoreMatrix[i] = 0;
-    }   
-}
 
 
 // Randomly generates a 5x5 matrix of numbers from 0 to 5
@@ -86,25 +33,6 @@ void randomizeBoard(int *board[5][5]) {
             *board[i][j] = rand() % 6;
         }
     }
-}
-
-
-// Tests if the selected tile is a valid move
-// A valid moves means an empty tile and a correct id in the emptyBoardMatrix
-int isValidMove(int board[5][5], int tile, int row, int col) {
-
-    if (board[row][col] == 0 && emptyBoardMatrix[row][col] == tile) {
-        return 1;
-    }
-    else {
-        return 0;
-    }
-}
-
-
-// Places a tile in the boardMatrix
-void placeTile(int* board[5][5], int tile, int row, int col) {
-    *board[row][col] = tile;
 }
 
 
@@ -146,7 +74,8 @@ int main(){
     // Random seed
     srand(time(NULL));
 
-
+    // Resets the game
+    resetGame();
 
     // --- TESTING ---
 
@@ -159,6 +88,10 @@ int main(){
 
 
     consolePointer(0, 40);
+
+
+    printBank();
+
     printf("Press enter to continue...");
     getchar();
 

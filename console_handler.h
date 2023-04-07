@@ -2,6 +2,9 @@
 #include <windows.h>
 
 
+// THIS IS WHERE THE BOARD IS RENDERED
+
+
 // Creates a 5x5 layout of the empty board and empty side board
 int emptyBoardMatrix[5][5] = {0};
 int emptySideBoardMatrix[5][5] = {0};
@@ -171,6 +174,8 @@ const char *menuButtons[8] = {
 
 
 
+
+
 // --- PROTOTYPES ---
 
 
@@ -204,7 +209,12 @@ void printGameBoard(int y, int board[5][5]);
 // Prints the side board for the given player
 void printSideBoard(int y, int board[5][5]);
 
+
+
+
+
 // --- CONSOLE AND DISPLAY FUNCTIONS ---
+
 
 // Toggles fullscreen mode
 void toggleFullscreen()
