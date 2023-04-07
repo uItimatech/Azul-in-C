@@ -5,6 +5,7 @@
 
 // Custom libraries
 #include "console_handler.h"
+#include "tile_handler.h"
 
 
 
@@ -156,7 +157,14 @@ int main(){
     printGameBoard(42, P1BoardMatrix);
     printSideBoard(42, P1SideBoardMatrix);
 
-    scanf("press enter to continue...");
-    
+
+    consolePointer(0, 40);
+    printf("Press enter to continue...");
+    getchar();
+
+    //Prints the mouse position on the screen
+    //printf("Mouse position: %d, %d\n", getMouseX(), getMouseY());
+
+
     return 0;
 }
