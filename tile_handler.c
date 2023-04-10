@@ -6,6 +6,8 @@
 // THIS IS WHERE THE TILES ARE STORED
 
 
+struct PlayerStruct players[4];
+
 // Creates 5x5 matrices of 0s for each player's board
 int P1BoardMatrix[5][5] = {0}, P2BoardMatrix[5][5] = {0}, P3BoardMatrix[5][5] = {0}, P4BoardMatrix[5][5] = {0};
 

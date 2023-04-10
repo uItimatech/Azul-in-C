@@ -23,7 +23,7 @@ int negativePoints(int overflowingTiles);
 
 
 // Moove tiles from factory to side board
-void mooveTiles();
+void moveTiles(int playerNumber, int factory, int color, int row);
 
 // Starts a new game leg
 void leg();

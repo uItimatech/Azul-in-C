@@ -4,6 +4,16 @@
 
 // THIS IS WHERE THE TILES ARE STORED
 
+// Structure for a player containing board and sideBoard Matrix, score and number of overflowTiles
+struct PlayerStruct {
+    int boardMatrix[5][5];
+    int sideBoardMatrix[5][5];
+    int overflowTiles;
+    int score;
+};
+
+extern struct PlayerStruct players[4];
+
 
 // Creates 5x5 matrices of 0s for each player's board
 extern int P1BoardMatrix[5][5];

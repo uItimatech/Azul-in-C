@@ -19,18 +19,19 @@ int currentPlayer = 0;
 // --- LEG MANAGEMENT FUNCTIONS ---
 
 //player chooses factory, tile and its color, then move the tiles of the factory into a row
-void moveTiles(){
-    // factory number
-    int factory;
-    // tile color
-    int color;
+// playerNumber is [0-3]
+void moveTiles(int playerNumber, int factory, int color, int row){
+    int numberofTilesPicked;
 
-//    if mousePressed(){
+    numberofTilesPicked = pickTilesFromFactory(factory, color);
+
+    placeTilesInSideBoard(&players[playerNumber].sideBoardMatrix,
+                          &players[playerNumber].overflowTiles,
+                          numberofTilesPicked,
+                          color,
+                          row);
 
 
-        // mettre dans pick tiles from factory numéro usine et couleur à recup depuis la souris
-        //pickTilesFromFactory();
-   // }
 }
 
 
