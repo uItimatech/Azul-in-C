@@ -17,7 +17,7 @@ const int backgroundColor = 8;
 int boardVerticalOffset = 42;
 
 // Default console width to center the game assets (Automatically adjusted)
-int consoleWidth = 214; // 2
+int consoleWidth = 214;
 int consoleHeight = 30;
 
 // Stores the tiles in an array of matrices

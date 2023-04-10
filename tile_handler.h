@@ -70,6 +70,21 @@ void refillFactories() {
     }
 }
 
+// Picks all tiles from a specific color in a specific factory
+// Returns the number of tiles picked
+void pickTilesFromFactory(int factory, int color) {
+    int pickedTiles = 0;
+    
+    for (int i = 0; i < 4; i++) {
+        if (tileFactory[factory][i] == color) {
+            tileFactory[factory][i] = 0;
+            pickedTiles++;
+        }
+    }
+
+    return pickedTiles;
+}
+
 // Resets the tile bank to 100 tiles7
 // There are 20 tiles of each color (0=none, 1=blue, 2=yellow, 3=red, 4=black, 5=turquoise)
 void refillTileBank() {
@@ -116,3 +131,4 @@ int isValidMove(int board[5][5], int tile, int row, int col) {
 void placeTile(int* board[5][5], int tile, int row, int col) {
     *board[row][col] = tile;
 }
+

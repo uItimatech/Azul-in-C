@@ -33,6 +33,10 @@ double topMargin = 0;
 extern int consoleWidth;
 extern int consoleHeight;
 
+
+
+
+
 // --- FUNCTIONS ---
 
 
