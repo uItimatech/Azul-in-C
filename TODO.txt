@@ -1,13 +1,11 @@
 A FAIRE: (globalement par ordre de priorité)
 
--'Sac' virtuel de tuiles (liste de tuiles avec n nombres de tuiles de chaque couleur et mélange aléatoire)
 -Usines de tuiles (listes prennant sur demande d'une fonction 4 tuiles depuis le sac virtuel
 -Banque de centre de table (liste des tuiles provennant des usines et n'ayant pas été choisies par le joueur)
 -Jeton joueur prioritaire (entier représentant quel joueur sera le premier à commencer au prochain tour.
  (Il sera attribué au premier joueur prennant des tuiles depuis le centre de table à chaque tour et prendra la valeur 0 après et tant qu'il n'est pas attribué à nouveu.)
 
 -Indicateur du joueur actuel et de son score
--Base interactions joueur (détection ligne souris + détection touches haut/bas/numéros)
 -Interactions joueur (sélectionner des tuiles dans les banques/usines, les placer)
 -Restriction d'interactions (va avec les interactions joueur)
 
@@ -23,3 +21,5 @@ A FAIRE: (globalement par ordre de priorité)
 TERMINE:
 
 -Modifier les fonctions d'affichage pour passer en affichage absolu au lieu de relatif (prendre exemple sur le jeu d'échecs)
+-'Sac' virtuel de tuiles (liste de tuiles avec n nombres de tuiles de chaque couleur et mélange aléatoire)
+-Base interactions joueur (détection ligne souris + détection touches haut/bas/numéros)

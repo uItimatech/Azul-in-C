@@ -9,11 +9,16 @@
 int emptyBoardMatrix[5][5] = {0};
 int emptySideBoardMatrix[5][5] = {0};
 
+// Used to remove highlighting from the tiles
+int highlightedTile[2] = {-1, -1};
+
 const int backgroundColor = 8;
 
-// Fix console width to center the game assets
-// Should be automated in the future
-const int consoleWidth = 214; // 214 for 1920x1080, 174 for 1280x720
+int boardVerticalOffset = 42;
+
+// Default console width to center the game assets (Automatically adjusted)
+int consoleWidth = 214; // 2
+int consoleHeight = 30;
 
 // Stores the tiles in an array of matrices
 const char *tileSprites[12][3] = {
@@ -182,7 +187,7 @@ const char *menuButtons[8] = {
 // Toggles fullscreen mode
 void toggleFullscreen();
 
-// Clears the console [TBM]
+// Clears the console
 void clearConsole();
 
 // Places the console pointer at the given coordinates
@@ -201,13 +206,16 @@ void printCredits(int y);
 void printTitle(int tile, int x, int y);
 
 // Prints a background for the game board
-void printBackground(int y);
+void printBackground();
 
 // Prints the main 5x5 board for the given player
-void printGameBoard(int y, int board[5][5]);
+void printGameBoard(int board[5][5]);
 
 // Prints the side board for the given player
-void printSideBoard(int y, int board[5][5]);
+void printSideBoard(int board[5][5]);
+
+// Higlights the given tile while removing previous highlights
+void highlightTile(int x, int y);
 
 
 
@@ -290,10 +298,11 @@ void printTile(int tile, int x, int y) {
     consoleColor(15, 0); // Resets the color
 }   
 
-void printBackground(int y) {
-    int x = consoleWidth/2 - 89/2;
-    int boardSizeX = 10*5 + 37;
-    int boardSizeY = 5*4 + 2;
+void printBackground() {
+    int x = consoleWidth/2 - 89/2 + 1;
+    int y = boardVerticalOffset + 1;
+    int boardSizeX = 86;
+    int boardSizeY = 21;
 
     // Prints the background using consolePointer
     consolePointer(x, y);
@@ -308,15 +317,16 @@ void printBackground(int y) {
 }
 
 // Prints the main 5x5 board for the given player
-void printGameBoard(int y, int board[5][5]) {
-    int x = consoleWidth/2 - 85/2 + 42;
+void printGameBoard(int board[5][5]) {
+    int x = consoleWidth/2;
+    int y = boardVerticalOffset;
 
     // Prints the column numbers
-    consoleColor(15, backgroundColor);
+    /*consoleColor(15, backgroundColor);
     consolePointer(x+6, y);
     printf("1       2       3       4       5");
     consolePointer(x+6, y+1);
-    printf("v       v       v       v       v");
+    printf("v       v       v       v       v");*/
 
     // Prints the board
     consolePointer(x, y+2);
@@ -324,7 +334,7 @@ void printGameBoard(int y, int board[5][5]) {
 
         // Prints the row arrows
         consoleColor(15, backgroundColor);
-        consolePointer(x, y+3+i*4);
+        consolePointer(x-1, y+3+i*4);
         printf("->");
         
         for (int j = 0; j < 5; j++) {
@@ -340,19 +350,20 @@ void printGameBoard(int y, int board[5][5]) {
 }
 
 // Prints the side board for the given player
-void printSideBoard(int y, int board[5][5]) {
-    int x = consoleWidth/2 - 85/2 - 2;
+void printSideBoard(int board[5][5]) {
+    int x = consoleWidth/2 - 45;
+    int y = boardVerticalOffset;
 
     // Prints the side board
     consolePointer(x, y+2);
     for (int i = 0; i < 5; i++) {
 
         // Prints the row numbers
-        consoleColor(15, backgroundColor);
+        /*consoleColor(15, backgroundColor);
         consolePointer(x, y+3+i*4);
         printf("%d", i+1);
         consolePointer(x+1, y+3+i*4);
-        printf(">");
+        printf(">");*/
 
         for (int j = 0; j < 5; j++) {
             //printTile(board[i][j], x+3+j*8, y+2+i*3);
@@ -369,5 +380,68 @@ void printSideBoard(int y, int board[5][5]) {
                 printTile(board[i][j], x+3+j*8, y+2+i*3);
             }
         }
+    }
+}
+
+// Higlights the given tile while removing previous highlights
+// Higlighting consists of printing a white 7x7 frame arround the given tile
+void highlightTile(int x, int y){
+    
+    int yDisplacement = boardVerticalOffset;
+
+    // If the current tile is different from the previous tile, removes the highlight from the previous tile
+    int prevX = highlightedTile[0];
+    int prevY = highlightedTile[1];
+
+    // Displacement is used to move the highlighted tile to the right if the tile is in the right side of the board
+    int displacement = 0;
+
+    if (prevX>5) displacement = 5;
+
+    // Removes the highlight from the previous tile by highlighting it with the background color
+    consolePointer(prevX*8 + consoleWidth/2 - 85/2 - 9 + displacement, prevY*4 + yDisplacement - 3);
+    consoleColor(backgroundColor, backgroundColor);
+
+    if ((prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+                consolePointer(prevX*8 + consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
+
+                // Places the highlight on the right side of the side board
+                if (prevX<6) consolePointer(consoleWidth/2 - 85/2 + 31 + displacement + j, prevY*4 + yDisplacement - 3 + i);
+
+                if ((i == 0 || i == 4 || j == 0 || j == 8) && prevX>5) printf("%c", 219);
+                if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && prevX<6) printf("%c", 219);
+            }
+        }
+    }
+
+    highlightedTile[0] = x;
+    highlightedTile[1] = y;
+
+    if ((x != -1 && y != -1) && (x != 11 && y != 6)) {
+
+        displacement = 0;
+
+        if (x>5) displacement = 5;
+
+        // Highlights the current tile
+        consolePointer(x*8 + consoleWidth/2 - 85/2 - 9 + displacement, y*4 + yDisplacement - 3);
+        consoleColor(15, 0);
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+                consolePointer(x*8 + consoleWidth/2 - 85/2 - 9 + displacement + j, y*4 + yDisplacement - 3 + i);
+
+                // Places the highlight on the right side of the side board
+                if (x<6) consolePointer(consoleWidth/2 - 85/2 + 31 + displacement + j, y*4 + yDisplacement - 3 + i);
+
+                if ((i == 0 || i == 4 || j == 0 || j == 8) && x>5) printf("%c", 219);
+                if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && x<6) printf("%c", 219);
+            }
+        }
+
+    } else {
+        return;
     }
 }

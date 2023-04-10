@@ -61,6 +61,9 @@ void resetGame() {
         }
     }
 
+    // Resets factories
+    resetFactories();
+
     // Resets the tile bank
     refillTileBank();
     shuffleTileBank();

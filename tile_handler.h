@@ -16,8 +16,10 @@ int P1SideBoardMatrix[5][5] = {0}, P2SideBoardMatrix[5][5] = {0}, P3SideBoardMat
 // Creates the tile bank
 int tileBank[100] = {0};
 
+int remainingBankTiles = 100;
+
 // Creates the 9 tile factories
-int tileFactory[9][5] = {0};
+int tileFactory[9][4] = {0};
 
 
 
@@ -25,6 +27,8 @@ int tileFactory[9][5] = {0};
 
 // --- PROTOTYPES ---
 
+// Resets all factories
+void resetFactories();
 
 // Resets the tile bank to 100 tiles
 void refillBank();
@@ -47,12 +51,32 @@ void placeTile(int *board[5][5], int tile, int row, int col);
 
 // --- TILE MANAGEMENT FUNCTIONS ---
 
+
+// Resets all factories
+void resetFactories() {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 5; j++) {
+            tileFactory[i][j] = 0;
+        }
+    }
+}
+
+// Refills all factories with tile from the tile bank
+void refillFactories() {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 4; j++) {
+            tileFactory[i][j] = pickTileFromBank();
+        }
+    }
+}
+
 // Resets the tile bank to 100 tiles7
 // There are 20 tiles of each color (0=none, 1=blue, 2=yellow, 3=red, 4=black, 5=turquoise)
 void refillTileBank() {
     for (int i = 0; i < 100; i++) {
         tileBank[i] = (i % 20) / 4 + 1;
     }
+    remainingBankTiles = 100;
 }
 
 // Shuffles the tile bank
@@ -65,23 +89,14 @@ void shuffleTileBank() {
     }
 }
 
-// Picks a random tile from the tile bank
+// Picks the last tile from the tile bank
 int pickTileFromBank() {
     int tile = 0;
-
-    // If the choosen tile is 0, pick another one
-    while (tile == 0) {
-        tile = tileBank[rand() % 100];
+    if (remainingBankTiles > 0) {
+        tile = tileBank[remainingBankTiles - 1];
+        remainingBankTiles--;
     }
-    tileBank[tile] = 0;
     return tile;
-}
-
-// FOR TESTING PURPOSES ONLY
-void printBank(){
-    for (int i = 0; i < 100; i++) {
-        printf("%d ", tileBank[i]);
-    }
 }
 
 // Tests if the selected tile is a valid move
