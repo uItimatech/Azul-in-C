@@ -31,7 +31,7 @@ int tileFactory[9][4] = {0};
 void resetFactories();
 
 // Resets the tile bank to 100 tiles
-void refillBank();
+void resetBank();
 
 // Shuffles the tile bank
 void shuffleTileBank();
@@ -85,9 +85,9 @@ void pickTilesFromFactory(int factory, int color) {
     return pickedTiles;
 }
 
-// Resets the tile bank to 100 tiles7
+// Resets the tile bank to 100 tiles
 // There are 20 tiles of each color (0=none, 1=blue, 2=yellow, 3=red, 4=black, 5=turquoise)
-void refillTileBank() {
+void resetTileBank() {
     for (int i = 0; i < 100; i++) {
         tileBank[i] = (i % 20) / 4 + 1;
     }
