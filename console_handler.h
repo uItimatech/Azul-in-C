@@ -5,10 +5,6 @@
 // THIS IS WHERE THE BOARD IS RENDERED
 
 
-// Creates a 5x5 layout of the empty board and empty side board
-int emptyBoardMatrix[5][5] = {0};
-int emptySideBoardMatrix[5][5] = {0};
-
 // Used to remove highlighting from the tiles
 int highlightedTile[2] = {-1, -1};
 
@@ -19,6 +15,9 @@ int boardVerticalOffset = 42;
 // Default console width to center the game assets (Automatically adjusted)
 int consoleWidth = 214;
 int consoleHeight = 30;
+
+extern int emptyBoardMatrix[5][5];
+extern int emptySideBoardMatrix[5][5];
 
 // Stores the tiles in an array of matrices
 const char *tileSprites[12][3] = {
