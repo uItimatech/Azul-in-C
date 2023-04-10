@@ -156,7 +156,7 @@ int isValidSideBoardMove(int board[5][5], int tileColor, int row) {
 // The first row has 1 tile, the second row has 2 tiles, the third row has 3 tiles, the fourth row has 4 tiles and the fifth row has 5 tiles
 void placeTilesInSideBoard(int* board[5][5], int* overflow, int tileAmount, int tileColor, int row) {
     
-    /*if (isValidSideBoardMove(board, tileColor, row)==1) {
+    if (isValidSideBoardMove(board, tileColor, row)==1) {
         
         // Detects how many tiles of this color are already in the row
         int tilesInRow = 0;
@@ -177,7 +177,7 @@ void placeTilesInSideBoard(int* board[5][5], int* overflow, int tileAmount, int 
             }
         }
 
-    }*/
+    }
 }
 
 // Places a tile in the boardMatrix if it is a valid move
