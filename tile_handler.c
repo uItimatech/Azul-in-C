@@ -3,10 +3,11 @@
 
 #include "tile_handler.h"
 
-// THIS IS WHERE THE TILES ARE STORED
+
+// THIS IS WHERE THE TILES ARE STORED AND MANIPULATED
 
 
-struct PlayerStruct players[4];
+struct playerStruct players[4];
 
 // Creates 5x5 matrices of 0s for each player's board
 int P1BoardMatrix[5][5] = {0}, P2BoardMatrix[5][5] = {0}, P3BoardMatrix[5][5] = {0}, P4BoardMatrix[5][5] = {0};

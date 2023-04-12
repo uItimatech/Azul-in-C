@@ -2,17 +2,18 @@
 #define __TILE_HANDLER_H__
 
 
-// THIS IS WHERE THE TILES ARE STORED
+// THIS IS WHERE THE TILES ARE STORED AND MANIPULATED
+
 
 // Structure for a player containing board and sideBoard Matrix, score and number of overflowTiles
-struct PlayerStruct {
+struct playerStruct {
     int boardMatrix[5][5];
     int sideBoardMatrix[5][5];
     int overflowTiles;
     int score;
 };
 
-extern struct PlayerStruct players[4];
+extern struct playerStruct players[4];
 
 
 // Creates 5x5 matrices of 0s for each player's board
@@ -55,7 +56,7 @@ extern int tileFactory[9][4];
 void resetFactories();
 
 // Resets the tile bank to 100 tiles
-void resetBank();
+void resetTileBank();
 
 // Shuffles the tile bank
 void shuffleTileBank();

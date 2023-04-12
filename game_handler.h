@@ -1,7 +1,8 @@
 #ifndef __GAME_HANDLER_H__
 #define __GAME_HANDLER_H__
 
-// THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
+
+// THIS IS WHERE PLAYER POINTS ARE CALCULATED
 
 
 // Creates the scores
@@ -25,8 +26,8 @@ int negativePoints(int overflowingTiles);
 // Moove tiles from factory to side board
 void moveTiles(int playerNumber, int factory, int color, int row);
 
-// Starts a new game leg
-void leg();
+// Starts a new game round
+void startRound();
 
 
 

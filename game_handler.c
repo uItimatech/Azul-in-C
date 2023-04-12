@@ -4,6 +4,7 @@
 #include "game_handler.h"
 #include "tile_handler.h"
 
+
 // THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
 
 
@@ -16,7 +17,7 @@ int playerCount = 4; // NOT IMPLEMENTED YET
 int currentPlayer = 0;
 
 
-// --- LEG MANAGEMENT FUNCTIONS ---
+// --- ROUND MANAGEMENT FUNCTIONS ---
 
 //player chooses factory, tile and its color, then move the tiles of the factory into a row
 // playerNumber is [0-3]
@@ -26,12 +27,10 @@ void moveTiles(int playerNumber, int factory, int color, int row){
     numberofTilesPicked = pickTilesFromFactory(factory, color);
 
     placeTilesInSideBoard(&players[playerNumber].sideBoardMatrix,
-                          &players[playerNumber].overflowTiles,
-                          numberofTilesPicked,
-                          color,
-                          row);
-
-
+                        &players[playerNumber].overflowTiles,
+                        numberofTilesPicked,
+                        color,
+                        row);
 }
 
 
