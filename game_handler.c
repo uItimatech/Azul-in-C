@@ -26,10 +26,10 @@ void moveTiles(int playerNumber, int factory, int color, int row){
     numberofTilesPicked = pickTilesFromFactory(factory, color);
 
     placeTilesInSideBoard(&players[playerNumber].sideBoardMatrix,
-                          &players[playerNumber].overflowTiles,
-                          numberofTilesPicked,
-                          color,
-                          row);
+                        &players[playerNumber].overflowTiles,
+                        numberofTilesPicked,
+                        color,
+                        row);
 
 
 }
@@ -73,7 +73,7 @@ void resetGame() {
     resetFactories();
 
     // Resets the tile bank
-    resetTileBank();
+    resetBank();
     shuffleTileBank();
 }
 

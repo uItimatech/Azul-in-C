@@ -32,6 +32,9 @@
 *.cbp
 *.depend
 
+# VS Code project files
+/.vscode
+
 # Executables
 *.exe
 *.out
