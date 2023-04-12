@@ -53,9 +53,6 @@ int main(){
     extern int consoleWidth;
     extern int consoleHeight;
 
-    extern int termCharWidth;
-    extern int termCharHeight;
-
     extern double leftMargin;
     extern double topMargin;
 

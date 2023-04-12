@@ -28,6 +28,10 @@
 *.so.*
 *.dylib
 
+# CodeBlocks project files
+*.cbp
+*.depend
+
 # Executables
 *.exe
 *.out
