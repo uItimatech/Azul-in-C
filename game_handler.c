@@ -72,7 +72,7 @@ void resetGame() {
     resetFactories();
 
     // Resets the tile bank
-    resetTileBank();
+    resetBank();
     shuffleTileBank();
 }
 

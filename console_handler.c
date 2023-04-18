@@ -210,10 +210,10 @@ void consolePointer(int x, int y) {
 }
 
 // Changes the console text and background colors
-void consoleColor (int textColor, int backgroundColor)
+void consoleColor (int textColor, int backColor)
 {
     HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(H, backgroundColor*16+textColor);
+    SetConsoleTextAttribute(H, backColor*16+textColor);
 }
 
 

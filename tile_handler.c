@@ -145,7 +145,6 @@ void placeTilesInSideBoard(int* board[5][5], int* overflow, int tileAmount, int 
                 *overflow++;
             }
         }
-
     }
 }
 
