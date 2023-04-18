@@ -5,75 +5,59 @@
 #include "tile_handler.h"
 
 
+const int emptyBoardMatrix[5][5] = {
+    { BLUE,         YELLOW,     RED,        BLACK,      TURQUOISE   },
+    { TURQUOISE,    BLUE,       YELLOW,     RED,        BLACK       },
+    { BLACK,        TURQUOISE,  BLUE,       YELLOW,     RED         },
+    { RED,          BLACK,      TURQUOISE,  BLUE,       YELLOW      },
+    { YELLOW,       RED,        BLACK,      TURQUOISE,  BLUE,       }
+};
+
+const int emptySideBoardMatrix[5][5] = {
+    { 0, 0, 0, 0, 1},
+    { 0, 0, 0, 1, 1},
+    { 0, 0, 1, 1, 1},
+    { 0, 1, 1, 1, 1},
+    { 1, 1, 1, 1, 1}
+};
+
 // THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
 
-
-// Creates the scores
-int scoreMatrix[4] = {0};
-
-int gamemode = 0; // 0 = default, 1 = free tile placement NOT IMPLEMENTED YET
-int playerCount = 4; // NOT IMPLEMENTED YET
-
-int currentPlayer = 0;
 
 
 // --- ROUND MANAGEMENT FUNCTIONS ---
 
 //player chooses factory, tile and its color, then move the tiles of the factory into a row
-// playerNumber is [0-3]
-void moveTiles(int playerNumber, int factory, int color, int row){
+void moveTiles(PlayerStruct* player, TileFactoryStruct* factory, int color, int row)
+{
     int numberofTilesPicked;
 
     numberofTilesPicked = pickTilesFromFactory(factory, color);
 
-    placeTilesInSideBoard(&players[playerNumber].sideBoardMatrix,
-                        &players[playerNumber].overflowTiles,
-                        numberofTilesPicked,
-                        color,
-                        row);
+    placeTilesInSideBoard(player,
+                          numberofTilesPicked,
+                          color,
+                          row);
 }
+
 
 
 // --- POINT MANAGEMENT FUNCTIONS ---
 
-void resetGame() {
-    // Resets the board matrices
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            P1BoardMatrix[i][j] = 0;
-            P2BoardMatrix[i][j] = 0;
-            P3BoardMatrix[i][j] = 0;
-            P4BoardMatrix[i][j] = 0;
-        }
-    }
-    // Resets the side board matrices
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            P1SideBoardMatrix[i][j] = 0;
-            P2SideBoardMatrix[i][j] = 0;
-            P3SideBoardMatrix[i][j] = 0;
-            P4SideBoardMatrix[i][j] = 0;
-        }
-    }
-
-    // Resets the scores
-    for (int i = 0; i < 4; i++) {
-        scoreMatrix[i] = 0;
+void resetGame(GameStruct* game)
+{
+    for (int i=0; i<NB_PLAYER; i++) {
+        initPlayer(&game->players[i]);
     }
 
     // Resets the tile factories
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 5; j++) {
-            tileFactory[i][j] = 0;
-        }
+    for (int i = 0; i < NB_FACTORY; i++) {
+        resetFactory(&game->tileFactories[i]);
     }
 
-    // Resets factories
-    resetFactories();
-
     // Resets the tile bank
-    resetTileBank();
-    shuffleTileBank();
+    resetTileBank(&game->bank);
+    shuffleTileBank(&game->bank);
 }
 
 // Calculates the negative points for the player based on the number of overflowing tiles
@@ -91,3 +75,17 @@ int negativePoints(int overflowingTiles){
 
     return points;
 }
+
+// init one player
+void initPlayer(PlayerStruct* player)
+{
+    for (int i=0; i<5; i++) {
+        for (int j=0; j<5; j++) {
+            player->boardMatrix[i][j] = NONE;
+            player->sideBoardMatrix[i][j] = NONE;
+        }
+    }
+    player->score = 0;
+    player->overflowTiles = 0;
+}
+

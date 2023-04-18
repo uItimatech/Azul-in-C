@@ -2,7 +2,7 @@
 #include <windows.h>
 
 #include "console_handler.h"
-
+#include "game_handler.h"
 
 // THIS IS WHERE THE BOARD IS RENDERED
 
@@ -12,14 +12,12 @@ int highlightedTile[2] = {-1, -1};
 
 const int backgroundColor = 8;
 
-int boardVerticalOffset = 42;
+const int boardVerticalOffset = 42;
 
 // Default console width to center the game assets (Automatically adjusted)
 int consoleWidth = 214;
 int consoleHeight = 30;
 
-extern int emptyBoardMatrix[5][5];
-extern int emptySideBoardMatrix[5][5];
 
 // Stores the tiles in an array of matrices
 const char *tileSprites[12][3] = {

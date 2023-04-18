@@ -5,6 +5,7 @@
 #define __CONSOLE_HANDLER_H__
 
 
+
 // THIS IS WHERE THE BOARD IS RENDERED
 
 
@@ -13,7 +14,7 @@ extern int highlightedTile[];
 
 extern const int backgroundColor;
 
-extern int boardVerticalOffset;
+extern const int boardVerticalOffset;
 
 // Default console width to center the game assets (Automatically adjusted)
 extern int consoleWidth;
