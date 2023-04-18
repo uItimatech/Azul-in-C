@@ -34,9 +34,6 @@ int main(){
     RECT windowRect;
 
 
-    resetGame(&game);
-
-
     // Random seed
     srand(time(NULL));
 
