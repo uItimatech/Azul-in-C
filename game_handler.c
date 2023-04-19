@@ -79,8 +79,6 @@ void gameRound(PlayerStruct* player, TileFactoryStruct* factory){
         i++;
     }
 
-
-
 }
 
 
