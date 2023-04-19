@@ -40,15 +40,49 @@ void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int co
                           row);
 }
 
-
-void moveTilesMainBoard(PlayerStruct* player, int color, int row){
+//move tiles from side to main board, needs active row and coordinates of main board place
+void moveTilesMainBoard(PlayerStruct* player, int color, int row, const int board[5][5]){
     int col;
-    for (int i=0, i<5 , i++){
-        if (board[i][row] = color)
-            col = i
+    for (int i=0 ; i<5 ; i++){
+        if (board[i][row] == color)
+            col = i;
     }
-    placeMainBoardTile(player,color,row,col)
+    placeMainBoardTile(player,color,row,col);
 }
+
+void gameRound(PlayerStruct* player, TileFactoryStruct* factory){
+    int i = 1;
+    int p = i % NB_PLAYER;
+    int checkEmpty = 1;
+
+
+
+    //while factories are not empty
+    while (checkEmpty != 0){
+
+        //condition : factories not empty
+        for(int i=0 ; i<9 ; i++){
+            for(int j=0 ; j<4 ; j++){
+                if (factory[i].tiles[j] == 0){
+                    checkEmpty = 0;
+                    break;
+                }
+            }
+        }
+
+        //round phase
+        printf("At player %d to play :\nMove tiles from factory to side board",p);
+        // moveTilesSideBoard(player[p] , factory[???????]);
+        // J'ai besoin de la position de la souris pour savoir quelle factory prendre
+
+
+        i++;
+    }
+
+
+
+}
+
 
 // --- POINT MANAGEMENT FUNCTIONS ---
 
