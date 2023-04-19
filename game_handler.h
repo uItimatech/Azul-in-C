@@ -63,7 +63,10 @@ int negativePoints(int overflowingTiles);
 
 
 // Moove tiles from factory to side board
-void moveTiles(PlayerStruct* player, TileFactoryStruct* factory, int color, int row);
+void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int color, int row);
+
+//Moove tiles from side board to main board
+void
 
 // Starts a new game round
 void startRound();
