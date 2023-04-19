@@ -42,10 +42,10 @@ typedef struct TileBankStruct TileBankStruct;
 
 // Game Structure
 struct GameStruct {
-   PlayerStruct         players[NB_PLAYER];
-   TileFactoryStruct    tileFactories[NB_FACTORY];
-   TileBankStruct       bank;
-   int                  currentPlayer;
+    PlayerStruct         players[NB_PLAYER];
+    TileFactoryStruct    tileFactories[NB_FACTORY];
+    TileBankStruct       bank;
+    int                  currentPlayer;
 };
 
 typedef struct GameStruct GameStruct;
@@ -62,8 +62,11 @@ void resetGame(GameStruct* game);
 int negativePoints(int overflowingTiles);
 
 
-// Moove tiles from factory to side board
-void moveTiles(PlayerStruct* player, TileFactoryStruct* factory, int color, int row);
+// Move tiles from factory to side board
+void moveTilesSideboard(PlayerStruct* player, TileFactoryStruct* factory, int color, int row);
+
+// Move tiles from factory to main board
+void moveTilesMainBoard(PlayerStruct* player, int color, int row);
 
 // Starts a new game round
 void startRound();
