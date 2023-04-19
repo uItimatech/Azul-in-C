@@ -28,7 +28,7 @@ const int emptySideBoardMatrix[5][5] = {
 // --- ROUND MANAGEMENT FUNCTIONS ---
 
 //player chooses factory, tile and its color, then move the tiles of the factory into a row
-void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int color, int row)
+void moveTiles(PlayerStruct* player, TileFactoryStruct* factory, int color, int row)
 {
     int numberofTilesPicked;
 
@@ -41,14 +41,6 @@ void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int co
 }
 
 
-void moveTilesMainBoard(PlayerStruct* player, int color, int row){
-    int col;
-    for (int i=0, i<5 , i++){
-        if (board[i][row] = color)
-            col = i
-    }
-    placeMainBoardTile(player,color,row,col)
-}
 
 // --- POINT MANAGEMENT FUNCTIONS ---
 
