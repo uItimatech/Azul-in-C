@@ -1,27 +1,8 @@
 {
-  "cSpell.ignoreWords": [
-    "KEYEVENTF"
-  ],
-  "cSpell.words": [
-    "fullscreen",
-    "Fullscreen",
-    "keybd"
-  ],
-  "files.associations": {
-    "xiosbase": "cpp",
-    "initializer_list": "cpp",
-    "type_traits": "cpp",
-    "xstring": "cpp",
-    "xutility": "cpp",
-    "cstdlib": "cpp",
-    "stdio.h": "c",
-    "winapifamily.h": "c",
-    "input_handler.h": "c"
-  },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
   "C_Cpp_Runner.debuggerPath": "gdb",
-  "C_Cpp_Runner.cStandard": "",
+  "C_Cpp_Runner.cStandard": "c99",
   "C_Cpp_Runner.cppStandard": "",
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.useMsvc": false,
@@ -31,14 +12,18 @@
     "-Wpedantic",
     "-Wshadow",
     "-Wformat=2",
-    "-Wconversion",
-    "-Wnull-dereference",
-    "-Wsign-conversion"
+    "-Wnull-dereference"
   ],
   "C_Cpp_Runner.enableWarnings": true,
   "C_Cpp_Runner.warningsAsError": false,
-  "C_Cpp_Runner.compilerArgs": [],
-  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.compilerArgs": [
+    "-Wall",
+    "-Wextra",
+    "-o",
+    "main.o"
+  ],
+  "C_Cpp_Runner.linkerArgs": [
+  ],
   "C_Cpp_Runner.includePaths": [],
   "C_Cpp_Runner.includeSearch": [
     "*",
@@ -52,5 +37,6 @@
     "**/.vscode",
     "**/.vscode/**"
   ],
-  "C_Cpp_Runner.useAddressSanitizer": false
+  "C_Cpp_Runner.useAddressSanitizer": false,
+  "C_Cpp.errorSquiggles": "disabled"
 }

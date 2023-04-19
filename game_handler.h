@@ -6,14 +6,8 @@
 #define     NB_MAX_TILES_IN_FACTORY     4
 #define     NB_FACTORY                  9
 
-// THIS IS WHERE PLAYER POINTS ARE CALCULATED
 
-#define NONE          0
-#define BLUE          1
-#define YELLOW        2
-#define RED           3
-#define BLACK         4
-#define TURQUOISE     5
+// THIS IS WHERE PLAYER POINTS ARE CALCULATED
 
 
 const int emptyBoardMatrix[5][5];

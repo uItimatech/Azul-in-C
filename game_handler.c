@@ -5,12 +5,15 @@
 #include "tile_handler.h"
 
 
+// THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
+
+
 const int emptyBoardMatrix[5][5] = {
-    { BLUE,         YELLOW,     RED,        BLACK,      TURQUOISE   },
-    { TURQUOISE,    BLUE,       YELLOW,     RED,        BLACK       },
-    { BLACK,        TURQUOISE,  BLUE,       YELLOW,     RED         },
-    { RED,          BLACK,      TURQUOISE,  BLUE,       YELLOW      },
-    { YELLOW,       RED,        BLACK,      TURQUOISE,  BLUE,       }
+    { 1, 2, 3, 4, 5},
+    { 5, 1, 2, 3, 4},
+    { 4, 5, 1, 2, 3},
+    { 3, 4, 5, 1, 2},
+    { 2, 3, 4, 5, 1}
 };
 
 const int emptySideBoardMatrix[5][5] = {
@@ -20,9 +23,6 @@ const int emptySideBoardMatrix[5][5] = {
     { 0, 1, 1, 1, 1},
     { 1, 1, 1, 1, 1}
 };
-
-// THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
-
 
 
 // --- ROUND MANAGEMENT FUNCTIONS ---
@@ -35,14 +35,15 @@ void moveTiles(PlayerStruct* player, TileFactoryStruct* factory, int color, int 
     numberofTilesPicked = pickTilesFromFactory(factory, color);
 
     placeTilesInSideBoard(player,
-                          numberofTilesPicked,
-                          color,
-                          row);
+                        numberofTilesPicked,
+                        color,
+                        row);
 }
 
 
 
 // --- POINT MANAGEMENT FUNCTIONS ---
+
 
 void resetGame(GameStruct* game)
 {
@@ -81,8 +82,8 @@ void initPlayer(PlayerStruct* player)
 {
     for (int i=0; i<5; i++) {
         for (int j=0; j<5; j++) {
-            player->boardMatrix[i][j] = NONE;
-            player->sideBoardMatrix[i][j] = NONE;
+            player->boardMatrix[i][j] = 0;
+            player->sideBoardMatrix[i][j] = 0;
         }
     }
     player->score = 0;

@@ -1,12 +1,12 @@
 #include <windows.h>
 #include <stdio.h>
 
-
 #include "input_handler.h"
 #include "console_handler.h"
 
 
 // THIS IS WHERE INPUTS ARE PROCESSED
+
 
 // Default character size in pixels (Automatically adjusted)
 int termCharWidth = 8;

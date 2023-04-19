@@ -1,6 +1,7 @@
 #ifndef __INPUT_HANDLER_H__
 #define __INPUT_HANDLER_H__
 
+#include <windows.h>
 
 // THIS IS WHERE INPUTS ARE PROCESSED
 
