@@ -22,8 +22,7 @@
     "-o",
     "main.o"
   ],
-  "C_Cpp_Runner.linkerArgs": [
-  ],
+  "C_Cpp_Runner.linkerArgs": [],
   "C_Cpp_Runner.includePaths": [],
   "C_Cpp_Runner.includeSearch": [
     "*",
