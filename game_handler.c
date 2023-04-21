@@ -34,10 +34,7 @@ void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int co
 
     numberofTilesPicked = pickTilesFromFactory(factory, color);
 
-    placeTilesInSideBoard(player,
-                          numberofTilesPicked,
-                          color,
-                          row);
+    placeTilesInSideBoard(player, numberofTilesPicked, color, row);
 }
 
 //move tiles from side to main board, needs active row and coordinates of main board place
@@ -55,13 +52,11 @@ void gameRound(PlayerStruct* player, TileFactoryStruct* factory){
     int p = i % NB_PLAYER;
     int checkEmpty = 1;
 
-
-
     //while factories are not empty
     while (checkEmpty != 0){
 
         //condition : factories not empty
-        for(int i=0 ; i<9 ; i++){
+        for(i=0 ; i<9 ; i++){
             for(int j=0 ; j<4 ; j++){
                 if (factory[i].tiles[j] == 0){
                     checkEmpty = 0;

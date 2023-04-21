@@ -53,8 +53,8 @@ POINT getTMousePos() {
 
 // Returns mouse coordinates on the game boards as a POINT struct
 // Returns coordinates between (0, 0) and (10, 5) or (-1, -1) if the mouse is outside the boards
-// Side board corners are (65,43) and (105,63) (upper left and lower right)
-// Main board corners are (109,43) and (149,63) (upper left and lower right)
+// Side board corners are (65,43) and (105,63) (by default; upper left and lower right)
+// Main board corners are (109,43) and (149,63) (by default; upper left and lower right)
 POINT getMouseBoardTilePos() {
     POINT mousePos = getMousePos();
     POINT tMousePos;
@@ -74,6 +74,21 @@ POINT getMouseBoardTilePos() {
     }
 
     return tMousePos;
+}
+
+// Returns 1 if the mouse is in the specified rectangle, 0 otherwise
+int isCursorInRect(int x, int y, int width, int height){
+    POINT mousePos = getMousePos();
+    POINT tMousePos;
+
+    tMousePos.x = mousePos.x / termCharWidth;
+    tMousePos.y = mousePos.y / termCharHeight;
+
+    if (tMousePos.x >= x && tMousePos.x <= x+width && tMousePos.y >= y && tMousePos.y <= y+height) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 // Returns the state of the left mouse button
