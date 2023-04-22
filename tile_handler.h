@@ -1,8 +1,8 @@
 #ifndef __TILE_HANDLER_H__
 #define __TILE_HANDLER_H__
 
-
 #include "game_handler.h"
+
 
 // THIS IS WHERE THE TILES ARE STORED AND MANIPULATED
 

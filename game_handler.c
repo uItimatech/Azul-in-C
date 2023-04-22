@@ -6,11 +6,11 @@
 
 
 const int emptyBoardMatrix[5][5] = {
-    { BLUE,         YELLOW,     RED,        BLACK,      TURQUOISE   },
-    { TURQUOISE,    BLUE,       YELLOW,     RED,        BLACK       },
-    { BLACK,        TURQUOISE,  BLUE,       YELLOW,     RED         },
-    { RED,          BLACK,      TURQUOISE,  BLUE,       YELLOW      },
-    { YELLOW,       RED,        BLACK,      TURQUOISE,  BLUE,       }
+    { 1, 2, 3, 4, 5},
+    { 5, 1, 2, 3, 4},
+    { 4, 5, 1, 2, 3},
+    { 3, 4, 5, 1, 2},
+    { 2, 3, 4, 5, 1}
 };
 
 const int emptySideBoardMatrix[5][5] = {
@@ -44,7 +44,7 @@ void moveTilesMainBoard(PlayerStruct* player, int color, int row, const int boar
         if (board[i][row] == color)
             col = i;
     }
-    placeMainBoardTile(player,color,row,col);
+    placeMainBoardTile(player->boardMatrix, color, row, col);
 }
 
 void gameRound(PlayerStruct* player, TileFactoryStruct* factory){
@@ -64,6 +64,8 @@ void gameRound(PlayerStruct* player, TileFactoryStruct* factory){
                 }
             }
         }
+
+        printf("player score: %d", player->score);
 
         //round phase
         printf("At player %d to play :\nMove tiles from factory to side board",p);

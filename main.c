@@ -25,8 +25,7 @@ int main(){
 
     toggleFullscreen();
 
-    printf("Press enter to continue...");
-    getchar();
+    system("pause");
 
     // Gets the console handle
     HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);

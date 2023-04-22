@@ -14,17 +14,17 @@
 // There are 20 tiles of each color (0=none, 1=blue, 2=yellow, 3=red, 4=black, 5=turquoise)
 void resetTileBank(TileBankStruct* tileBank)
 {
-     for (int i=0; i<NB_TILES_BANK; i++) {
+    for (int i=0; i<NB_TILES_BANK; i++) {
         tileBank->tiles[i] = (i % 20) / 4 + 1;
-     }
-     tileBank->nbTilesRemaining = NB_TILES_BANK;
+    }
+    tileBank->nbTilesRemaining = NB_TILES_BANK;
 }
 
 void resetFactory(TileFactoryStruct* tileFactory)
 {
-     for (int i=0; i<NB_MAX_TILES_IN_FACTORY; i++) {
+    for (int i=0; i<NB_MAX_TILES_IN_FACTORY; i++) {
         tileFactory->tiles[i] = 0;
-     }
+    }
 }
 
 // Refills all factories with tile from the tile bank
@@ -119,8 +119,7 @@ void placeTilesInSideBoard(PlayerStruct* player, int nbTiles, int tileColor, int
             if (tilesInRow < 5) {
                 player->boardMatrix[4-row][tilesInRow] = tileColor;
                 tilesInRow++;
-        }
-           else {
+        } else {
                 player->overflowTiles++;
             }
         }

@@ -16,9 +16,11 @@
 #define TURQUOISE     5
 
 
-const int emptyBoardMatrix[5][5];
+extern const int emptyBoardMatrix[5][5];
 
-const int emptySideBoardMatrix[5][5];
+extern const int emptySideBoardMatrix[5][5];
+
+
 
 // Player
 struct PlayerStruct {
@@ -30,12 +32,16 @@ struct PlayerStruct {
 
 typedef struct PlayerStruct PlayerStruct;
 
+
+
 // Factory will be instanciated 9 times
 struct TileFactoryStruct {
     int tiles[NB_MAX_TILES_IN_FACTORY];
 };
 
 typedef struct TileFactoryStruct TileFactoryStruct;
+
+
 
 // Bank
 struct TileBankStruct {
@@ -46,12 +52,13 @@ struct TileBankStruct {
 typedef struct TileBankStruct TileBankStruct;
 
 
+
 // Game Structure
 struct GameStruct {
-   PlayerStruct         players[NB_PLAYER];
-   TileFactoryStruct    tileFactories[NB_FACTORY];
-   TileBankStruct       bank;
-   int                  currentPlayer;
+    PlayerStruct         players[NB_PLAYER];
+    TileFactoryStruct    tileFactories[NB_FACTORY];
+    TileBankStruct       bank;
+    int                  currentPlayer;
 };
 
 typedef struct GameStruct GameStruct;

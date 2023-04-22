@@ -34,7 +34,7 @@ extern const char *logoSprite[35];
 extern const char *credits[2];
 
 // Stores the menu buttons
-const char *menuButtons[8];
+extern const char *menuButtons[8];
 
 
 
