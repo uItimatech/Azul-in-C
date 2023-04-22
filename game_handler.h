@@ -1,19 +1,14 @@
 #ifndef __GAME_HANDLER_H__
 #define __GAME_HANDLER_H__
 
-#define     NB_PLAYER                   4
-#define     NB_TILES_BANK               100
-#define     NB_MAX_TILES_IN_FACTORY     4
-#define     NB_FACTORY                  9
 
 // THIS IS WHERE PLAYER POINTS ARE CALCULATED
 
-#define NONE          0
-#define BLUE          1
-#define YELLOW        2
-#define RED           3
-#define BLACK         4
-#define TURQUOISE     5
+
+#define PLAYER_COUNT        4
+#define BANK_TILE_COUNT     100
+#define FACTORY_TILE_COUNT  4
+#define FACTORY_COUNT       9
 
 
 extern const int emptyBoardMatrix[5][5];
@@ -21,8 +16,7 @@ extern const int emptyBoardMatrix[5][5];
 extern const int emptySideBoardMatrix[5][5];
 
 
-
-// Player
+// Player structure (2 boards (int[5][5]), 1 overflow tiles counter (int), 1 score (int))
 struct PlayerStruct {
     int boardMatrix[5][5];
     int sideBoardMatrix[5][5];
@@ -33,30 +27,27 @@ struct PlayerStruct {
 typedef struct PlayerStruct PlayerStruct;
 
 
-
 // Factory will be instanciated 9 times
 struct TileFactoryStruct {
-    int tiles[NB_MAX_TILES_IN_FACTORY];
+    int tiles[FACTORY_TILE_COUNT];
 };
 
 typedef struct TileFactoryStruct TileFactoryStruct;
 
 
-
 // Bank
 struct TileBankStruct {
-    int tiles[NB_TILES_BANK];
+    int tiles[BANK_TILE_COUNT];
     int nbTilesRemaining;
 };
 
 typedef struct TileBankStruct TileBankStruct;
 
 
-
 // Game Structure
 struct GameStruct {
-    PlayerStruct         players[NB_PLAYER];
-    TileFactoryStruct    tileFactories[NB_FACTORY];
+    PlayerStruct         players[PLAYER_COUNT];
+    TileFactoryStruct    tileFactories[FACTORY_COUNT];
     TileBankStruct       bank;
     int                  currentPlayer;
 };
@@ -66,6 +57,8 @@ typedef struct GameStruct GameStruct;
 
 
 // --- PROTOTYPES ---
+
+
 void initPlayer(PlayerStruct* player);
 
 // Resets the game

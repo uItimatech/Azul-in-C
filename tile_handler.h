@@ -7,10 +7,9 @@
 // THIS IS WHERE THE TILES ARE STORED AND MANIPULATED
 
 
-// Structure for a player containing board and sideBoard Matrix, score and number of overflowTiles
-
 
 // --- PROTOTYPES ---
+
 
 // Resets a factory
 void resetFactory(TileFactoryStruct* tileFactory);
@@ -40,5 +39,6 @@ void placeMainBoardTile(int board[5][5], int tile, int row, int col);
 // Places a tile in the sideBoardMatrix
 void placeTilesInSideBoard(PlayerStruct* player, int nbTiles, int tileColor, int row);
 
-#endif // __TILE_HANDLER_H__
 
+
+#endif // __TILE_HANDLER_H__

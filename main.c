@@ -4,7 +4,7 @@
 #include <time.h>
 #include <math.h>
 
-// Custom libraries
+// Project headers
 #include "console_handler.h"
 #include "tile_handler.h"
 #include "game_handler.h"
@@ -12,7 +12,6 @@
 
 
 
-// --- PROTOTYPES ---
 
 
 // --- MAIN ---
@@ -21,6 +20,7 @@
 int main(){
 
     // --- INITIALIZATION ---
+
     GameStruct game;
 
     toggleFullscreen();

@@ -38,7 +38,6 @@ extern const char *menuButtons[8];
 
 
 
-
 // --- PROTOTYPES ---
 
 
@@ -75,7 +74,6 @@ void printSideBoard(int board[5][5]);
 // Higlights the given tile while removing previous highlights
 void highlightTile(int x, int y);
 
+
+
 #endif // __CONSOLE_HANDLER_H__é
-
-
-

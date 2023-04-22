@@ -5,6 +5,9 @@
 #include "tile_handler.h"
 
 
+// THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
+
+
 const int emptyBoardMatrix[5][5] = {
     { 1, 2, 3, 4, 5},
     { 5, 1, 2, 3, 4},
@@ -20,8 +23,6 @@ const int emptySideBoardMatrix[5][5] = {
     { 0, 1, 1, 1, 1},
     { 1, 1, 1, 1, 1}
 };
-
-// THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
 
 
 

@@ -5,6 +5,7 @@
 // THIS IS WHERE INPUTS ARE PROCESSED
 
 
+
 // --- PROTOTYPES ---
 
 
@@ -33,7 +34,6 @@ extern int termCharHeight;
 extern double leftMargin;
 extern double topMargin;
 
+
+
 #endif
-
-
-
