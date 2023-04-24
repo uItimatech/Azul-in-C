@@ -44,13 +44,13 @@ int main(){
 
     // Menu buttons displacement
     int MBDx = consoleWidth/2-35;
-    int MBDy = menuVerticalOffset+42;
+    int MBDy = menuVerticalOffset+45;
 
     // Menu buttons
-    menuButtons[0] = createButton(MBDx-1,  MBDy-2, strlen(menuButtonLabels[0])+2, 3, menuButtonLabels[0]);
-    menuButtons[1] = createButton(MBDx+20, MBDy-2, strlen(menuButtonLabels[1])+2, 3, menuButtonLabels[1]);
-    menuButtons[2] = createButton(MBDx+43, MBDy-2, strlen(menuButtonLabels[2])+2, 3, menuButtonLabels[2]);
-    menuButtons[3] = createButton(MBDx+64, MBDy-2, strlen(menuButtonLabels[3])+2, 3, menuButtonLabels[3]);
+    menuButtons[0] = createButton(MBDx-2,  MBDy-2, strlen(menuButtonLabels[0])+2, 3, menuButtonLabels[0]);
+    menuButtons[1] = createButton(MBDx+19, MBDy-2, strlen(menuButtonLabels[1])+2, 3, menuButtonLabels[1]);
+    menuButtons[2] = createButton(MBDx+42, MBDy-2, strlen(menuButtonLabels[2])+2, 3, menuButtonLabels[2]);
+    menuButtons[3] = createButton(MBDx+63, MBDy-2, strlen(menuButtonLabels[3])+2, 3, menuButtonLabels[3]);
 
     // Initializes the game
     GameStruct game;
@@ -108,11 +108,14 @@ int main(){
             }
 
             // Highlighting
+            int buttonCollided = 0;
             for (int i = 0; i < 4; i++) {
                 if (isMouseInRect(menuButtons[i].x, menuButtons[i].y, menuButtons[i].width, menuButtons[i].height)) {
                     highlightButton(menuButtons[i]);
+                    buttonCollided = 1;
                 }
             }
+            if (!buttonCollided) highlightButton(createButton(-1, -1, -1, -1, ""));
         }
 
         if (IN_GAME) {

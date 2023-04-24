@@ -99,11 +99,11 @@ void printEndMenu();
 // Higlights the given tile while removing previous highlights
 void highlightTile(int x, int y);
 
-// If 'space' is pressed while the mouse is over the button, returns 1
-int isButtonPressed(BUTTON button);
-
 // Highlights the given button
 void highlightButton(BUTTON button);
+
+// If 'space' is pressed while the mouse is over the button, returns 1
+int isButtonPressed(BUTTON button);
 
 
 #endif // __CONSOLE_HANDLER_H__

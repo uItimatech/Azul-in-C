@@ -382,6 +382,8 @@ void printEndMenu(){
 // Higlighting consists of printing a white 7x7 frame arround the given tile
 void highlightTile(int x, int y){
 
+    consolePointer(0, 0);
+
     int yDisplacement = boardVerticalOffset;
 
     // If the tile is already highlighted, returns
@@ -444,23 +446,10 @@ void highlightTile(int x, int y){
     }
 }
 
-// If 'space' is pressed while the mouse is over the button, returns 1
-int isButtonPressed(BUTTON button) {
-    if (isMouseInRect(button.x, button.y, button.width, button.height)) {
-        if (GetAsyncKeyState(VK_SPACE)) {
-            // wait for the space key to be released
-            while (GetAsyncKeyState(VK_SPACE));
-            
-            // checks if the mouse is still over the button
-            if (isMouseInRect(button.x, button.y, button.width, button.height))
-            return 1;
-        }
-    }
-    return 0;
-}
-
 // Highlights the given button if the mouse is over it
 void highlightButton(BUTTON button) {
+
+    consolePointer(0, 0);
 
     // If the button is already highlighted, returns
     if (highlightedButton.x == button.x && highlightedButton.y == button.y) return;
@@ -485,4 +474,19 @@ void highlightButton(BUTTON button) {
         //consoleColor(15, backgroundColor);
         printf("  %s  ", (const char*)button.label);
     }
+}
+
+// If 'space' is pressed while the mouse is over the button, returns 1
+int isButtonPressed(BUTTON button) {
+    if (isMouseInRect(button.x, button.y, button.width, button.height)) {
+        if (GetAsyncKeyState(VK_SPACE)) {
+            // wait for the space key to be released
+            while (GetAsyncKeyState(VK_SPACE));
+
+            // checks if the mouse is still over the button
+            if (isMouseInRect(button.x, button.y, button.width, button.height))
+            return 1;
+        }
+    }
+    return 0;
 }
