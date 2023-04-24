@@ -104,7 +104,7 @@ int isValidSideBoardMove(int board[5][5], int tileColor, int row) {
 // a revoir NbTiles
 void placeTilesInSideBoard(PlayerStruct* player, int nbTiles, int tileColor, int row) {
 
-    if (isValidSideBoardMove(player->sideBoardMatrix, tileColor, row)==1) {
+    if (isValidSideBoardMove(player->sideBoardMatrix, tileColor, row)) {
 
         // Detects how many tiles of this color are already in the row
         int tilesInRow = 0;
@@ -128,8 +128,7 @@ void placeTilesInSideBoard(PlayerStruct* player, int nbTiles, int tileColor, int
 
 // Places a tile in the boardMatrix if it is a valid move
 void placeMainBoardTile(int board[5][5], int tile, int row, int col) {
-    if (isValidMainBoardMove(board, tile, row, col)==1) {
+    if (isValidMainBoardMove(board, tile, row, col)) {
         board[row][col] = tile;
     }
 }
-

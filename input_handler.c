@@ -9,12 +9,14 @@
 // THIS IS WHERE INPUTS ARE PROCESSED
 
 
-// Default character size in pixels (Automatically adjusted)
+// Default character size in pixels (Currently not automatically adjusted)
 int termCharWidth = 8;
 int termCharHeight = 16;
 
+// Margins to center the game assets (Automatically adjusted)
 double leftMargin = 0;
 double topMargin = 0;
+
 
 // --- FUNCTIONS ---
 
@@ -82,7 +84,7 @@ POINT getMouseBoardTilePos() {
 }
 
 // Returns 1 if the mouse is in the specified rectangle, 0 otherwises
-int isCursorInRect(int x, int y, int width, int height){
+int isMouseInRect(int x, int y, int width, int height){
     POINT tMousePos = getTMousePos();
 
     if (tMousePos.x >= x && tMousePos.x <= x+width && tMousePos.y >= y && tMousePos.y <= y+height) {
@@ -92,7 +94,7 @@ int isCursorInRect(int x, int y, int width, int height){
     }
 }
 
-// Returns the state of the left mouse button
+// Returns the state of the left mouse button (CURRENTLY UNUSED)
 int mousePressed() {
     return GetAsyncKeyState(VK_LBUTTON);
 }

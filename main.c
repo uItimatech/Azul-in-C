@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <unistd.h>
 
 // Project headers
 #include "console_handler.h"
@@ -25,8 +26,6 @@ int main(){
 
     toggleFullscreen();
 
-    system("pause");
-
     // Gets the console handle
     HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -48,50 +47,87 @@ int main(){
         consoleHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
 
+    // Menu buttons displacement
+    int MBDx = consoleWidth/2-35;
+    int MBDy = menuVerticalOffset+42;
 
-
+    // Menu buttons
+    menuButtons[0] = createButton(MBDx-1, MBDx+strlen(menuButtonLabels[0])+1,   MBDy-1, MBDy+1, menuButtonLabels[0]);
+    menuButtons[1] = createButton(MBDx+20, MBDx+strlen(menuButtonLabels[1])+22, MBDy-1, MBDy+1, menuButtonLabels[1]);
+    menuButtons[2] = createButton(MBDx+43, MBDx+strlen(menuButtonLabels[2])+45, MBDy-1, MBDy+1, menuButtonLabels[2]);
+    menuButtons[3] = createButton(MBDx+64, MBDx+strlen(menuButtonLabels[3])+66, MBDy-1, MBDy+1, menuButtonLabels[3]);
 
 
     // --- TESTING ---
 
-    printLogo(2);
-    printCredits(38);
 
-    printBackground();
-    printGameBoard(game.players[0].boardMatrix);
-    printSideBoard(game.players[0].sideBoardMatrix);
-
-
-    consolePointer(0, 40);
+    //printPlayerInterface(game.players[game.currentPlayer]);
 
 
 
-    //printf("Press enter to continue...");
-    //getchar();
-
-    //Prints the mouse position on the screen
-    /*int Mx = getTMousePos().x;
-    int My = getTMousePos().y;
-    consolePointer(Mx, My);
-    printf("Selected tile: %ld, %ld", getMouseBoardTilePos().x, getMouseBoardTilePos().y);
-    printf("Press enter to continue...");*/
-
-
+    // Main loop
 
     while (1) {
-        highlightTile(getMouseBoardTilePos().x, getMouseBoardTilePos().y);
-        //highlightTile(-1, -1);
-        consolePointer(0, 40);
-        consoleColor(15, 0);
-        // prints tmouse position
-        printf("Console position: %1f, %1f\n", leftMargin, topMargin);
-        printf("Mouse position: %1ld, %1ld\n", getTMousePos().x, getTMousePos().y);
-        printf("Mouse board position: %ld, %ld", getMouseBoardTilePos().x, getMouseBoardTilePos().y);
+        //highlightTile(getMouseBoardTilePos().x, getMouseBoardTilePos().y);
 
         if (GetWindowRect(GetConsoleWindow(), &windowRect)) {
             leftMargin = round(windowRect.left);
             topMargin = round(windowRect.top);
         }
+
+        if (DEBUG_MODE) {
+        consolePointer(0, 40);
+        consoleColor(15, 0);
+
+        printf("Console position: %1f, %1f\n", leftMargin, topMargin);
+        printf("Mouse position: %1ld, %1ld\n", getTMousePos().x, getTMousePos().y);
+        printf("Mouse board position: %ld, %ld", getMouseBoardTilePos().x, getMouseBoardTilePos().y);
+        }
+
+        if (MAIN_MENU) {
+            if (!DISPLAY_STATE) {clearConsole(); printMenu(); DISPLAY_STATE = 1;}
+
+            // Play button
+            if (isButtonPressed(menuButtons[0])) {
+                resetGame(&game);
+                IN_GAME = 1;
+                MAIN_MENU = 0;
+                DISPLAY_STATE = 0;
+            }
+
+            // Options button
+            if (isButtonPressed(menuButtons[1])) {
+                MAIN_MENU = 0;
+                OPTIONS_MENU = 1;
+                DISPLAY_STATE = 0;
+            }
+
+            // Rules button
+            if (isButtonPressed(menuButtons[2])) {
+                // Opens rules.pdf in the default application if it exists
+                if (access("rules.pds", F_OK) == 0) system("start rules.pdf"); 
+            }
+
+            // Quit button
+            if (isButtonPressed(menuButtons[3])) {
+                return 0;
+            }
+
+            // Highlighting
+            for (int i = 0; i < 4; i++) {
+                if (isMouseInRect(menuButtons[i].x, menuButtons[i].y, menuButtons[i].width, menuButtons[i].height)) {
+                    highlightButton(menuButtons[i]);
+                    printf("HIGHLIGHT");
+                }
+            }
+        }
+
+        if (IN_GAME) {
+            if (!DISPLAY_STATE) {clearConsole(); printPlayerInterface(game.players[game.currentPlayer]); DISPLAY_STATE = 1;}
+        }
+
+        if (END_MENU) {
+            if (!DISPLAY_STATE) {clearConsole(); printEndMenu(); DISPLAY_STATE = 1;}}
     }
 
     return 0;

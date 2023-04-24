@@ -3,22 +3,24 @@
 
 #include "console_handler.h"
 #include "game_handler.h"
+#include "input_handler.h"
 
 
 // THIS IS WHERE THE BOARD IS RENDERED
 
 
-// Used to remove highlighting from the tiles
-int highlightedTile[2] = {-1, -1};
-
 const int backgroundColor = 8;
 
 const int boardVerticalOffset = 42;
+
+const int menuVerticalOffset = 10;
 
 // Default console width to center the game assets (Automatically adjusted)
 int consoleWidth = 214;
 int consoleHeight = 30;
 
+// Used to remove highlighting from the tiles
+int highlightedTile[2] = {-1, -1};
 
 // Stores the tiles in an array of matrices
 const char *tileSprites[12][3] = {
@@ -166,16 +168,16 @@ const char *credits[2] = {
 };
 
 // Stores the menu buttons
-const char *menuButtons[8] = {
+const char *menuButtonLabels[4] = {
     "Play",
     "Options",
     "Rules",
-    "Quit",
-    "- Play -",
-    "- Options -",
-    "- Rules -",
-    "- Quit -"
+    "Quit"
 };
+
+BUTTON menuButtons[4];
+
+
 
 // --- CONSOLE AND DISPLAY FUNCTIONS ---
 
@@ -215,6 +217,16 @@ void consoleColor (int textColor, int backColor)
     SetConsoleTextAttribute(H, backColor*16+textColor);
 }
 
+// Creates a button
+BUTTON createButton(int x, int y, int width, int height, const char *label) {
+    BUTTON button;
+    button.x = x;
+    button.y = y;
+    button.width = width;
+    button.height = height;
+    strcpy((char*)button.label, label);
+    return button;
+}
 
 // Prints the logo line by line
 void printLogo(int y) {
@@ -296,7 +308,7 @@ void printGameBoard(int board[5][5]) {
         for (int j = 0; j < 5; j++) {
             // If the tile is empty, prints from the empty tile sprites
             if (board[i][j] == 0) {
-                printTile(emptyBoardMatrix[i][j], x+3+j*8, y+2+i*4);
+                printTile(emptyBoardMatrix[i][j]+5, x+3+j*8, y+2+i*4);
             }
             else {
                 printTile(board[i][j], x+3+j*8, y+2+i*4);
@@ -337,6 +349,30 @@ void printSideBoard(int board[5][5]) {
             }
         }
     }
+}
+
+// Prints a given player's interface (board, side board, score, id)
+void printPlayerInterface(PlayerStruct player){
+    printBackground();
+    printGameBoard(player.boardMatrix);
+    printSideBoard(player.sideBoardMatrix);
+}
+
+// Prints the menu
+void printMenu(){
+    printLogo(menuVerticalOffset);
+    printCredits(menuVerticalOffset+36);
+
+    // Prints the 4 menu buttons on the same line (Play Options, Rules, Exit)
+    for (int i = 0; i < 4; i++) {
+        consolePointer(menuButtons[i].x, menuButtons[i].y);
+        printf("%s",(const char*)menuButtons[i].label);
+    }
+}
+
+// Prints the game end menu
+void printEndMenu(){
+    
 }
 
 // Higlights the given tile while removing previous highlights
@@ -399,5 +435,26 @@ void highlightTile(int x, int y){
 
     } else {
         return;
+    }
+}
+
+// If 'space' is pressed while the mouse is over the button, returns 1
+int isButtonPressed(BUTTON button) {
+    if (isMouseInRect(button.x, button.y, button.width, button.height)) {
+        if (GetAsyncKeyState(VK_SPACE)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Highlights the given button if the mouse is over it
+void highlightButton(BUTTON button) {
+    if (isMouseInRect(button.x, button.y, button.width, button.height)) {
+        consolePointer(button.x-4, button.y);
+        printf("- %s -", (const char*)button.label);
+    } else {
+        consolePointer(button.x, button.y);
+        printf("%s", (const char*)button.label);
     }
 }

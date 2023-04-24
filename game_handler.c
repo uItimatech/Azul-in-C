@@ -24,9 +24,18 @@ const int emptySideBoardMatrix[5][5] = {
     { 1, 1, 1, 1, 1}
 };
 
+int DEBUG_MODE   = 1;
+int MAIN_MENU    = 1;
+int OPTIONS_MENU = 0;
+int IN_GAME      = 0;
+int END_MENU     = 0;
+
+int DISPLAY_STATE = 0;
+
 
 
 // --- ROUND MANAGEMENT FUNCTIONS ---
+
 
 //player chooses factory, tile and its color, then move the tiles of the factory into a row
 void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int color, int row)
@@ -126,4 +135,3 @@ void initPlayer(PlayerStruct* player)
     player->score = 0;
     player->overflowTiles = 0;
 }
-
