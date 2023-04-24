@@ -11,7 +11,7 @@
 
 const int backgroundColor = 8;
 
-const int boardVerticalOffset = 42;
+const int boardVerticalOffset = 32;
 
 const int menuVerticalOffset = 10;
 
@@ -21,6 +21,9 @@ int consoleHeight = 30;
 
 // Used to remove highlighting from the tiles
 int highlightedTile[2] = {-1, -1};
+
+BUTTON highlightedButton = {-1, -1, -1, -1, {""}};
+
 
 // Stores the tiles in an array of matrices
 const char *tileSprites[12][3] = {
@@ -381,6 +384,9 @@ void highlightTile(int x, int y){
 
     int yDisplacement = boardVerticalOffset;
 
+    // If the tile is already highlighted, returns
+    if (highlightedTile[0] == x && highlightedTile[1] == y) return;
+
     // If the current tile is different from the previous tile, removes the highlight from the previous tile
     int prevX = highlightedTile[0];
     int prevY = highlightedTile[1];
@@ -442,6 +448,8 @@ void highlightTile(int x, int y){
 int isButtonPressed(BUTTON button) {
     if (isMouseInRect(button.x, button.y, button.width, button.height)) {
         if (GetAsyncKeyState(VK_SPACE)) {
+            // wait for the space key to be released
+            while (GetAsyncKeyState(VK_SPACE));
             return 1;
         }
     }
@@ -450,11 +458,28 @@ int isButtonPressed(BUTTON button) {
 
 // Highlights the given button if the mouse is over it
 void highlightButton(BUTTON button) {
+
+    // If the button is already highlighted, returns
+    if (highlightedButton.x == button.x && highlightedButton.y == button.y) return;
+
+    // Removes the highlight from the previous button
+    if (highlightedButton.x != -1 && highlightedButton.y != -1) {
+        consolePointer(highlightedButton.x-2, highlightedButton.y);
+        //consoleColor(15, backgroundColor);
+        printf("  %s  ", (const char*)highlightedButton.label);
+    }
+
+    highlightedButton.x = button.x;
+    highlightedButton.y = button.y;
+    strcpy((char*)highlightedButton.label, (char*)button.label);
+
     if (isMouseInRect(button.x, button.y, button.width, button.height)) {
-        consolePointer(button.x-4, button.y);
+        consolePointer(button.x-2, button.y);
+        //consoleColor(backgroundColor, 15);
         printf("- %s -", (const char*)button.label);
     } else {
-        consolePointer(button.x, button.y);
-        printf("%s", (const char*)button.label);
+        consolePointer(button.x-2, button.y);
+        //consoleColor(15, backgroundColor);
+        printf("  %s  ", (const char*)button.label);
     }
 }

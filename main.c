@@ -22,8 +22,6 @@ int main(){
 
     // --- INITIALIZATION ---
 
-    GameStruct game;
-
     toggleFullscreen();
 
     // Gets the console handle
@@ -34,9 +32,6 @@ int main(){
 
     // Random seed
     srand(time(NULL));
-
-    // Resets the game
-    resetGame(&game);
 
     // Clears the console
     clearConsole();
@@ -52,23 +47,22 @@ int main(){
     int MBDy = menuVerticalOffset+42;
 
     // Menu buttons
-    menuButtons[0] = createButton(MBDx-1, MBDx+strlen(menuButtonLabels[0])+1,   MBDy-1, MBDy+1, menuButtonLabels[0]);
-    menuButtons[1] = createButton(MBDx+20, MBDx+strlen(menuButtonLabels[1])+22, MBDy-1, MBDy+1, menuButtonLabels[1]);
-    menuButtons[2] = createButton(MBDx+43, MBDx+strlen(menuButtonLabels[2])+45, MBDy-1, MBDy+1, menuButtonLabels[2]);
-    menuButtons[3] = createButton(MBDx+64, MBDx+strlen(menuButtonLabels[3])+66, MBDy-1, MBDy+1, menuButtonLabels[3]);
+    menuButtons[0] = createButton(MBDx-1,  MBDy-1, strlen(menuButtonLabels[0])+2, 3, menuButtonLabels[0]);
+    menuButtons[1] = createButton(MBDx+20, MBDy-1, strlen(menuButtonLabels[1])+2, 3, menuButtonLabels[1]);
+    menuButtons[2] = createButton(MBDx+43, MBDy-1, strlen(menuButtonLabels[2])+2, 3, menuButtonLabels[2]);
+    menuButtons[3] = createButton(MBDx+64, MBDy-1, strlen(menuButtonLabels[3])+2, 3, menuButtonLabels[3]);
 
-
-    // --- TESTING ---
-
-
-    //printPlayerInterface(game.players[game.currentPlayer]);
-
+    // Initializes the game
+    GameStruct game;
+    initGame(&game);
+    
+    // Resets the game (for testing purposes)
+    //resetGame(&game);
 
 
     // Main loop
 
     while (1) {
-        //highlightTile(getMouseBoardTilePos().x, getMouseBoardTilePos().y);
 
         if (GetWindowRect(GetConsoleWindow(), &windowRect)) {
             leftMargin = round(windowRect.left);
@@ -105,7 +99,7 @@ int main(){
             // Rules button
             if (isButtonPressed(menuButtons[2])) {
                 // Opens rules.pdf in the default application if it exists
-                if (access("rules.pds", F_OK) == 0) system("start rules.pdf"); 
+                if (access("rules.pdf", F_OK) == 0) system("start rules.pdf"); 
             }
 
             // Quit button
@@ -117,13 +111,14 @@ int main(){
             for (int i = 0; i < 4; i++) {
                 if (isMouseInRect(menuButtons[i].x, menuButtons[i].y, menuButtons[i].width, menuButtons[i].height)) {
                     highlightButton(menuButtons[i]);
-                    printf("HIGHLIGHT");
                 }
             }
         }
 
         if (IN_GAME) {
             if (!DISPLAY_STATE) {clearConsole(); printPlayerInterface(game.players[game.currentPlayer]); DISPLAY_STATE = 1;}
+
+            highlightTile(getMouseBoardTilePos().x, getMouseBoardTilePos().y);
         }
 
         if (END_MENU) {

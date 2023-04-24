@@ -24,7 +24,7 @@ const int emptySideBoardMatrix[5][5] = {
     { 1, 1, 1, 1, 1}
 };
 
-int DEBUG_MODE   = 1;
+int DEBUG_MODE   = 0; // Displays additional information in the console
 int MAIN_MENU    = 1;
 int OPTIONS_MENU = 0;
 int IN_GAME      = 0;
@@ -36,6 +36,37 @@ int DISPLAY_STATE = 0;
 
 // --- ROUND MANAGEMENT FUNCTIONS ---
 
+
+// Initializes the game
+void initGame(GameStruct* game)
+{
+    // Initializes the players
+    for (int i = 0; i < PLAYER_COUNT; i++) {
+        initPlayer(&game->players[i]);
+    }
+
+    // Initializes the tile factories
+    for (int i = 0; i < FACTORY_COUNT; i++) {
+        resetFactory(&game->tileFactories[i]);
+    }
+
+    // Initializes the tile bank
+    resetTileBank(&game->bank);
+    shuffleTileBank(&game->bank);
+}
+
+// Initializes the player's informations
+void initPlayer(PlayerStruct* player)
+{
+    for (int i=0; i<5; i++) {
+        for (int j=0; j<5; j++) {
+            player->boardMatrix[i][j] = 0;
+            player->sideBoardMatrix[i][j] = 0;
+        }
+    }
+    player->score = 0;
+    player->overflowTiles = 0;
+}
 
 //player chooses factory, tile and its color, then move the tiles of the factory into a row
 void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int color, int row)
@@ -121,17 +152,4 @@ int negativePoints(int overflowingTiles){
     }
 
     return points;
-}
-
-// init one player
-void initPlayer(PlayerStruct* player)
-{
-    for (int i=0; i<5; i++) {
-        for (int j=0; j<5; j++) {
-            player->boardMatrix[i][j] = 0;
-            player->sideBoardMatrix[i][j] = 0;
-        }
-    }
-    player->score = 0;
-    player->overflowTiles = 0;
 }

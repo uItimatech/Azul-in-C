@@ -66,7 +66,10 @@ typedef struct GameStruct GameStruct;
 
 // --- PROTOTYPES ---
 
+// Initializes the game
+void initGame(GameStruct* game);
 
+// Initializes the player's informations
 void initPlayer(PlayerStruct* player);
 
 // Resets the game
@@ -84,6 +87,7 @@ void moveTilesMainBoard(PlayerStruct* player, int color, int row, const int boar
 
 // Starts a new game round
 void gameRound(PlayerStruct* player, TileFactoryStruct* factory);
+
 
 
 
