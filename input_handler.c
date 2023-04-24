@@ -48,8 +48,8 @@ POINT getTMousePos() {
     POINT mousePos = getMousePos();
     POINT tMousePos;
 
-    tMousePos.x = mousePos.x / termCharWidth;
-    tMousePos.y = mousePos.y / termCharHeight;
+    tMousePos.x = (mousePos.x-leftMargin) / termCharWidth;
+    tMousePos.y = (mousePos.y-topMargin)  / termCharHeight;
 
     return tMousePos;
 }
@@ -67,12 +67,10 @@ POINT getMouseBoardTilePos() {
     int boardVerticalSize = 21; // Height of each board in characters
     // Note: the vertical offset is already defined in the console_handler.h file
 
-    if (tMousePos.x >= boardHorizontalOffset-(leftMargin/termCharWidth) && tMousePos.x <= boardHorizontalOffset+boardHorizontalSize-(leftMargin/termCharWidth) && tMousePos.y >= boardVerticalOffset-(topMargin/termCharHeight)+1 && tMousePos.y <= boardVerticalOffset-(topMargin/termCharHeight)+boardVerticalSize) {
-        //boardMousePos.x = (tMousePos.x - 172)/8;
-        //boardMousePos.y = (tMousePos.y - 43)/4;
+    if (tMousePos.x >= boardHorizontalOffset && tMousePos.x <= boardHorizontalOffset+boardHorizontalSize && tMousePos.y >= boardVerticalOffset+1 && tMousePos.y <= boardVerticalOffset+boardVerticalSize) {
         boardMousePos.x = (tMousePos.x - boardHorizontalOffset - leftMargin  -4)/8   +1;
         boardMousePos.y = (tMousePos.y - boardVerticalOffset   - topMargin   -1)/4   +1;
-    } else if (tMousePos.x >= boardHorizontalOffset+boardHorizontalSize-(leftMargin/termCharWidth)+4 && tMousePos.x <= boardHorizontalOffset-(leftMargin/termCharWidth)+2*boardHorizontalSize+4 && tMousePos.y >= boardVerticalOffset-(topMargin/termCharHeight)+1 && tMousePos.y <= boardVerticalOffset-(topMargin/termCharHeight)+boardVerticalSize) {
+    } else if (tMousePos.x >= boardHorizontalOffset+boardHorizontalSize+4 && tMousePos.x <= boardHorizontalOffset+2*boardHorizontalSize+4 && tMousePos.y >= boardVerticalOffset+1 && tMousePos.y <= boardVerticalOffset+boardVerticalSize) {
         boardMousePos.x = (tMousePos.x - boardHorizontalOffset - leftMargin    )/8     ;
         boardMousePos.y = (tMousePos.y - boardVerticalOffset   - topMargin   -1)/4   +1;
     } else{
