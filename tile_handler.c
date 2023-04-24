@@ -14,22 +14,22 @@
 // There are 20 tiles of each color (0=none, 1=blue, 2=yellow, 3=red, 4=black, 5=turquoise)
 void resetTileBank(TileBankStruct* tileBank)
 {
-    for (int i=0; i<NB_TILES_BANK; i++) {
+    for (int i=0; i<BANK_TILE_COUNT; i++) {
         tileBank->tiles[i] = (i % 20) / 4 + 1;
     }
-    tileBank->nbTilesRemaining = NB_TILES_BANK;
+    tileBank->nbTilesRemaining = BANK_TILE_COUNT;
 }
 
 void resetFactory(TileFactoryStruct* tileFactory)
 {
-    for (int i=0; i<NB_MAX_TILES_IN_FACTORY; i++) {
+    for (int i=0; i<FACTORY_TILE_COUNT; i++) {
         tileFactory->tiles[i] = 0;
     }
 }
 
 // Refills all factories with tile from the tile bank
 void refillFactory(TileBankStruct* bank, TileFactoryStruct* tileFactory) {
-    for (int j = 0; j < NB_MAX_TILES_IN_FACTORY; j++) {
+    for (int j = 0; j < FACTORY_TILE_COUNT; j++) {
             tileFactory->tiles[j] = pickTileFromBank(bank);
     }
 }
@@ -51,7 +51,7 @@ int pickTileFromBank(TileBankStruct* bank) {
 int pickTilesFromFactory(TileFactoryStruct* factory, int color) {
     int pickedTiles = 0;
 
-    for (int i = 0; i < NB_MAX_TILES_IN_FACTORY; i++) {
+    for (int i = 0; i < FACTORY_TILE_COUNT; i++) {
         if (factory->tiles[i] == color) {
             factory->tiles[i] = 0;
             pickedTiles++;
@@ -65,8 +65,8 @@ int pickTilesFromFactory(TileFactoryStruct* factory, int color) {
 // Shuffles the tile bank
 // swap elements randomly
 void shuffleTileBank(TileBankStruct* bank) {
-    for (int i = 0; i < NB_TILES_BANK; i++) {
-        int j = rand() % NB_TILES_BANK;
+    for (int i = 0; i < BANK_TILE_COUNT; i++) {
+        int j = rand() % BANK_TILE_COUNT;
         int temp = bank->tiles[i];
         bank->tiles[i] = bank->tiles[j];
         bank->tiles[j] = temp;

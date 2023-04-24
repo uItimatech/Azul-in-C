@@ -50,7 +50,7 @@ void moveTilesMainBoard(PlayerStruct* player, int color, int row, const int boar
 
 void gameRound(PlayerStruct* player, TileFactoryStruct* factory){
     int i = 1;
-    int p = i % NB_PLAYER;
+    int p = i % PLAYER_COUNT;
     int checkEmpty = 1;
 
     //while factories are not empty
@@ -84,12 +84,12 @@ void gameRound(PlayerStruct* player, TileFactoryStruct* factory){
 
 void resetGame(GameStruct* game)
 {
-    for (int i=0; i<NB_PLAYER; i++) {
+    for (int i = 0; i < PLAYER_COUNT; i++) {
         initPlayer(&game->players[i]);
     }
 
     // Resets the tile factories
-    for (int i = 0; i < NB_FACTORY; i++) {
+    for (int i = 0; i < FACTORY_COUNT; i++) {
         resetFactory(&game->tileFactories[i]);
     }
 
@@ -119,8 +119,8 @@ void initPlayer(PlayerStruct* player)
 {
     for (int i=0; i<5; i++) {
         for (int j=0; j<5; j++) {
-            player->boardMatrix[i][j] = NONE;
-            player->sideBoardMatrix[i][j] = NONE;
+            player->boardMatrix[i][j] = 0;
+            player->sideBoardMatrix[i][j] = 0;
         }
     }
     player->score = 0;
