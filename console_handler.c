@@ -450,6 +450,9 @@ int isButtonPressed(BUTTON button) {
         if (GetAsyncKeyState(VK_SPACE)) {
             // wait for the space key to be released
             while (GetAsyncKeyState(VK_SPACE));
+            
+            // checks if the mouse is still over the button
+            if (isMouseInRect(button.x, button.y, button.width, button.height))
             return 1;
         }
     }

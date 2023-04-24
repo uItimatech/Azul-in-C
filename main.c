@@ -47,10 +47,10 @@ int main(){
     int MBDy = menuVerticalOffset+42;
 
     // Menu buttons
-    menuButtons[0] = createButton(MBDx-1,  MBDy-1, strlen(menuButtonLabels[0])+2, 3, menuButtonLabels[0]);
-    menuButtons[1] = createButton(MBDx+20, MBDy-1, strlen(menuButtonLabels[1])+2, 3, menuButtonLabels[1]);
-    menuButtons[2] = createButton(MBDx+43, MBDy-1, strlen(menuButtonLabels[2])+2, 3, menuButtonLabels[2]);
-    menuButtons[3] = createButton(MBDx+64, MBDy-1, strlen(menuButtonLabels[3])+2, 3, menuButtonLabels[3]);
+    menuButtons[0] = createButton(MBDx-1,  MBDy-2, strlen(menuButtonLabels[0])+2, 3, menuButtonLabels[0]);
+    menuButtons[1] = createButton(MBDx+20, MBDy-2, strlen(menuButtonLabels[1])+2, 3, menuButtonLabels[1]);
+    menuButtons[2] = createButton(MBDx+43, MBDy-2, strlen(menuButtonLabels[2])+2, 3, menuButtonLabels[2]);
+    menuButtons[3] = createButton(MBDx+64, MBDy-2, strlen(menuButtonLabels[3])+2, 3, menuButtonLabels[3]);
 
     // Initializes the game
     GameStruct game;
