@@ -36,7 +36,7 @@ POINT getMousePos() {
     POINT mousePos;
     GetCursorPos(&mousePos);
 
-    mousePos.x -= leftMargin/2 - termCharWidth*consoleWidth/2; //414
+    mousePos.x -= leftMargin/2; //414
     mousePos.y -= topMargin/2; //46
 
     return mousePos;
@@ -48,7 +48,7 @@ POINT getTMousePos() {
     POINT mousePos = getMousePos();
     POINT tMousePos;
 
-    tMousePos.x = mousePos.x / termCharWidth - 105;
+    tMousePos.x = mousePos.x / termCharWidth;
     tMousePos.y = mousePos.y / termCharHeight;
 
     return tMousePos;
@@ -63,17 +63,19 @@ POINT getMouseBoardTilePos() {
     POINT boardMousePos;
 
     int boardHorizontalOffset = consoleWidth/2 - 45; // Horizontal offset of the left side of the left board from the left side of the console
-    int boardHorizontalSize = 21; // Width of each board in characters
+    int boardHorizontalSize = 41; // Width of each board in characters
     int boardVerticalSize = 21; // Height of each board in characters
     // Note: the vertical offset is already defined in the console_handler.h file
 
-    if (tMousePos.x >= boardHorizontalOffset && tMousePos.x <= boardHorizontalOffset+boardHorizontalSize && tMousePos.y >= boardVerticalOffset+1 && tMousePos.y <= boardVerticalOffset+boardVerticalSize) {
-        boardMousePos.x = (tMousePos.x - 172)/8;
-        boardMousePos.y = (tMousePos.y - 43)/4;
-    } else if (tMousePos.x >= 9999 && tMousePos.x <= 9999 && tMousePos.y >= boardVerticalOffset+1 && tMousePos.y <= boardVerticalOffset+boardVerticalSize) {
-        boardMousePos.x = (tMousePos.x - 216)/8;
-        boardMousePos.y = (tMousePos.y - 43)/4;
-    } else {
+    if (tMousePos.x >= boardHorizontalOffset-(leftMargin/termCharWidth) && tMousePos.x <= boardHorizontalOffset+boardHorizontalSize-(leftMargin/termCharWidth) && tMousePos.y >= boardVerticalOffset-(topMargin/termCharHeight)+1 && tMousePos.y <= boardVerticalOffset-(topMargin/termCharHeight)+boardVerticalSize) {
+        //boardMousePos.x = (tMousePos.x - 172)/8;
+        //boardMousePos.y = (tMousePos.y - 43)/4;
+        boardMousePos.x = (tMousePos.x - boardHorizontalOffset - leftMargin  -4)/8   +1;
+        boardMousePos.y = (tMousePos.y - boardVerticalOffset   - topMargin   -1)/4   +1;
+    } else if (tMousePos.x >= boardHorizontalOffset+boardHorizontalSize-(leftMargin/termCharWidth)+4 && tMousePos.x <= boardHorizontalOffset-(leftMargin/termCharWidth)+2*boardHorizontalSize+4 && tMousePos.y >= boardVerticalOffset-(topMargin/termCharHeight)+1 && tMousePos.y <= boardVerticalOffset-(topMargin/termCharHeight)+boardVerticalSize) {
+        boardMousePos.x = (tMousePos.x - boardHorizontalOffset - leftMargin    )/8     ;
+        boardMousePos.y = (tMousePos.y - boardVerticalOffset   - topMargin   -1)/4   +1;
+    } else{
         boardMousePos.x = -1;
         boardMousePos.y = -1;
     }
@@ -81,7 +83,7 @@ POINT getMouseBoardTilePos() {
     return boardMousePos;
 }
 
-// Returns 1 if the mouse is in the specified rectangle, 0 otherwise
+// Returns 1 if the mouse is in the specified rectangle, 0 otherwises
 int isCursorInRect(int x, int y, int width, int height){
     POINT tMousePos = getTMousePos();
 

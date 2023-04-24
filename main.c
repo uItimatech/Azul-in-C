@@ -84,7 +84,9 @@ int main(){
         consolePointer(0, 40);
         consoleColor(15, 0);
         // prints tmouse position
-        printf("Console position: %1d, %1d", leftMargin, topMargin);
+        printf("Console position: %1f, %1f\n", leftMargin, topMargin);
+        printf("Mouse position: %1ld, %1ld\n", getTMousePos().x, getTMousePos().y);
+        printf("Mouse board position: %ld, %ld", getMouseBoardTilePos().x, getMouseBoardTilePos().y);
 
         if (GetWindowRect(GetConsoleWindow(), &windowRect)) {
             leftMargin = round(windowRect.left);
