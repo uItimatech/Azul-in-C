@@ -9,31 +9,6 @@
 // THIS IS WHERE THE BOARD IS RENDERED
 
 
-int DEBUG_MODE   = 0; // Displays additional information in the console
-int MAIN_MENU    = 1;
-int OPTIONS_MENU = 0;
-int IN_GAME      = 0;
-int END_MENU     = 0;
-
-int DISPLAY_STATE = 0;
-
-
-const int backgroundColor = 8;
-
-const int boardVerticalOffset = 25;
-
-const int menuVerticalOffset = 10;
-
-// Default console width to center the game assets (Automatically adjusted)
-int consoleWidth = 214;
-int consoleHeight = 30;
-
-// Used to remove highlighting from the tiles
-int highlightedTile[2] = {-1, -1};
-
-BUTTON highlightedButton = {-1, -1, -1, -1, {""}};
-
-
 // Stores the tiles in an array of matrices
 const char *tileSprites[12][3] = {
     {// BLANK TILE
@@ -182,7 +157,6 @@ const char *credits[2] = {
 // Stores the menu buttons
 const char *menuButtonLabels[4] = {
     "Play",
-    "Options",
     "Rules",
     "Quit"
 };
@@ -217,8 +191,8 @@ void clearConsole() {
 void consolePointer(int x, int y) {
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD pos; // Struct type defined in windows.h
-    pos.X=x-8;
-    pos.Y=y-8;
+    pos.X=x;
+    pos.Y=y;
     SetConsoleCursorPosition(hStdout, pos);
 }
 
@@ -240,9 +214,55 @@ BUTTON createButton(int x, int y, int width, int height, const char *label) {
     return button;
 }
 
+// Creates a game window
+GAMEWINDOW createGameWindow() {
+
+    GAMEWINDOW GW;
+
+    GW.DEBUG_MODE   = 0; // Displays additional information in the console
+    GW.MAIN_MENU    = 1; // Could use a simple menu ID but this is better for undestanding
+    GW.IN_GAME      = 0;
+    GW.END_MENU     = 0;
+
+    GW.DISPLAY_STATE = 0;
+
+    strcpy(GW.Title,"Azul");
+
+    GW.backgroundColor = 8;
+
+    GW.boardVerticalOffset = 25;
+
+    GW.menuVerticalOffset = 1;
+
+    // Default console width to center the game assets (Automatically adjusted)
+    GW.consoleWidth = 250;
+    GW.consoleHeight = 60;
+
+    // Used to remove highlighting from the tiles
+    GW.highlightedTile[0] = -1;
+    GW.highlightedTile[1] = -1;
+
+    GW.highlightedButton = (BUTTON){-1, -1, -1, -1, {""}};
+
+    // Default character size in pixels (Currently not automatically adjusted)
+    GW.termCharWidth = 8;
+    GW.termCharHeight = 16;
+
+    // Margins to center the game assets (Automatically adjusted)
+    GW.leftMargin = 0;
+    GW.topMargin = 0;
+
+
+    return GW;
+}
+
+
+GAMEWINDOW gameWin;
+
+
 // Prints the logo line by line
 void printLogo(int y) {
-    int x = consoleWidth/2 - strlen(logoSprite[0])/2;
+    int x = gameWin.consoleWidth/2 - strlen(logoSprite[0])/2 +2;
     consolePointer(x, y);
     consoleColor(3, 0);
     for (int i = 0; i < 35; i++) {
@@ -255,12 +275,12 @@ void printLogo(int y) {
 
 // Prints the credits
 void printCredits(int y) {
-    int x = consoleWidth/2 - strlen(credits[0])/2;
+    int x = gameWin.consoleWidth/2 - strlen(credits[0])/2 +2;
 
     consolePointer(x, y);
     printf("%s", credits[0]);
 
-    x = consoleWidth/2 - strlen(credits[1])/2;
+    x = gameWin.consoleWidth/2 - strlen(credits[1])/2;
     consolePointer(x, y+1);
     printf("%s", credits[1]);
 }
@@ -272,15 +292,15 @@ void printTile(int tile, int x, int y) {
         consoleColor(tileColors[tile][1], tileColors[tile][0]); // Sets the color of the tile from the tileColors array
         consolePointer(x, y+i);
         printf("%s", tileSprites[tile][i]);
-        consoleColor(backgroundColor, backgroundColor);
+        consoleColor(gameWin.backgroundColor, gameWin.backgroundColor);
         printf("_"); // Prints an invisible character to avoid color bleeding to the next line
     }
     consoleColor(15, 0); // Resets the color
 }
 
 void printBackground() {
-    int x = consoleWidth/2 - 89/2 + 1;
-    int y = boardVerticalOffset + 1;
+    int x = gameWin.consoleWidth/2 - 89/2 + 1;
+    int y = gameWin.boardVerticalOffset + 1;
     int boardSizeX = 86;
     int boardSizeY = 21;
 
@@ -289,7 +309,7 @@ void printBackground() {
     for (int i = 0; i < boardSizeY; i++) {
         for (int j = 0; j < boardSizeX; j++) {
             consolePointer(x+j, y+i);
-            consoleColor(backgroundColor, backgroundColor);
+            consoleColor(gameWin.backgroundColor, gameWin.backgroundColor);
             printf("%c", 219);
         }
     }
@@ -298,8 +318,8 @@ void printBackground() {
 
 // Prints the main 5x5 board for the given player
 void printGameBoard(int board[5][5]) {
-    int x = consoleWidth/2;
-    int y = boardVerticalOffset;
+    int x = gameWin.consoleWidth/2;
+    int y = gameWin.boardVerticalOffset;
 
     // Prints the column numbers
     /*consoleColor(15, backgroundColor);
@@ -313,7 +333,7 @@ void printGameBoard(int board[5][5]) {
     for (int i = 0; i < 5; i++) {
 
         // Prints the row arrows
-        consoleColor(15, backgroundColor);
+        consoleColor(15, gameWin.backgroundColor);
         consolePointer(x-1, y+3+i*4);
         printf("->");
 
@@ -331,8 +351,8 @@ void printGameBoard(int board[5][5]) {
 
 // Prints the side board for the given player
 void printSideBoard(int board[5][5]) {
-    int x = consoleWidth/2 - 45;
-    int y = boardVerticalOffset;
+    int x = gameWin.consoleWidth/2 - 45;
+    int y = gameWin.boardVerticalOffset;
 
     // Prints the side board
     consolePointer(x, y+2);
@@ -368,18 +388,33 @@ void printPlayerInterface(PlayerStruct player){
     printBackground();
     printGameBoard(player.boardMatrix);
     printSideBoard(player.sideBoardMatrix);
+
+    // Prints the player's score and id
+    consoleColor(15, gameWin.backgroundColor);
+    consolePointer(gameWin.consoleWidth/2 - 43, gameWin.boardVerticalOffset-1);
+    printf("Score: %d", player.score);
+    consolePointer(gameWin.consoleWidth/2 - 43, gameWin.boardVerticalOffset-3);
+    printf("Player #%d", 0);
 }
 
 // Prints the menu
 void printMenu(){
-    printLogo(menuVerticalOffset);
-    printCredits(menuVerticalOffset+36);
 
+    char hint[24] = {"[Press space to select]"};
+
+    printLogo(gameWin.menuVerticalOffset);
+    printCredits(gameWin.menuVerticalOffset+37);
+
+    consoleColor(8, 0);
     // Prints the 4 menu buttons on the same line (Play Options, Rules, Exit)
     for (int i = 0; i < 4; i++) {
-        consolePointer(menuButtons[i].x, menuButtons[i].y);
+        consolePointer(menuButtons[i].x+2, menuButtons[i].y);
         printf("%s",(const char*)menuButtons[i].label);
     }
+
+    consoleColor(8, 0);
+    consolePointer(gameWin.consoleWidth/2 - strlen(hint)/2 + 2, gameWin.consoleHeight-1);
+    printf("%s", hint);
 }
 
 // Prints the game end menu
@@ -391,16 +426,16 @@ void printEndMenu(){
 // Higlighting consists of printing a white 7x7 frame arround the given tile
 void highlightTile(int x, int y){
 
-    consolePointer(0, 0);
+    consolePointer(gameWin.consoleWidth, gameWin.consoleHeight);
 
-    int yDisplacement = boardVerticalOffset;
+    int yDisplacement = gameWin.boardVerticalOffset;
 
     // If the tile is already highlighted, returns
-    if (highlightedTile[0] == x && highlightedTile[1] == y) return;
+    if (gameWin.highlightedTile[0] == x && gameWin.highlightedTile[1] == y) return;
 
     // If the current tile is different from the previous tile, removes the highlight from the previous tile
-    int prevX = highlightedTile[0];
-    int prevY = highlightedTile[1];
+    int prevX = gameWin.highlightedTile[0];
+    int prevY = gameWin.highlightedTile[1];
 
     // Displacement is used to move the highlighted tile to the right if the tile is in the right side of the board
     int displacement = 0;
@@ -408,16 +443,16 @@ void highlightTile(int x, int y){
     if (prevX>5) displacement = 5;
 
     // Removes the highlight from the previous tile by highlighting it with the background color
-    consolePointer(prevX*8 + consoleWidth/2 - 85/2 - 9 + displacement, prevY*4 + yDisplacement - 3);
-    consoleColor(backgroundColor, backgroundColor);
+    consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement, prevY*4 + yDisplacement - 3);
+    consoleColor(gameWin.backgroundColor, gameWin.backgroundColor);
 
     if ((prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
-                consolePointer(prevX*8 + consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
+                consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
 
                 // Places the highlight on the right side of the side board
-                if (prevX<6) consolePointer(consoleWidth/2 - 85/2 + 31 + displacement + j, prevY*4 + yDisplacement - 3 + i);
+                if (prevX<6) consolePointer(gameWin.consoleWidth/2 - 85/2 + 31 + displacement + j, prevY*4 + yDisplacement - 3 + i);
 
                 if ((i == 0 || i == 4 || j == 0 || j == 8) && prevX>5) printf("%c", 219);
                 if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && prevX<6) printf("%c", 219);
@@ -425,8 +460,8 @@ void highlightTile(int x, int y){
         }
     }
 
-    highlightedTile[0] = x;
-    highlightedTile[1] = y;
+    gameWin.highlightedTile[0] = x;
+    gameWin.highlightedTile[1] = y;
 
     if ((x != -1 && y != -1) && (x != 11 && y != 6)) {
 
@@ -435,15 +470,15 @@ void highlightTile(int x, int y){
         if (x>5) displacement = 5;
 
         // Highlights the current tile
-        consolePointer(x*8 + consoleWidth/2 - 85/2 - 9 + displacement, y*4 + yDisplacement - 3);
+        consolePointer(x*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement, y*4 + yDisplacement - 3);
         consoleColor(15, 0);
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
-                consolePointer(x*8 + consoleWidth/2 - 85/2 - 9 + displacement + j, y*4 + yDisplacement - 3 + i);
+                consolePointer(x*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, y*4 + yDisplacement - 3 + i);
 
                 // Places the highlight on the right side of the side board
-                if (x<6) consolePointer(consoleWidth/2 - 85/2 + 31 + displacement + j, y*4 + yDisplacement - 3 + i);
+                if (x<6) consolePointer(gameWin.consoleWidth/2 - 85/2 + 31 + displacement + j, y*4 + yDisplacement - 3 + i);
 
                 if ((i == 0 || i == 4 || j == 0 || j == 8) && x>5) printf("%c", 219);
                 if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && x<6) printf("%c", 219);
@@ -458,29 +493,29 @@ void highlightTile(int x, int y){
 // Highlights the given button if the mouse is over it
 void highlightButton(BUTTON button) {
 
-    consolePointer(0, 0);
+    consolePointer(gameWin.consoleWidth, gameWin.consoleHeight);
 
     // If the button is already highlighted, returns
-    if (highlightedButton.x == button.x && highlightedButton.y == button.y) return;
+    if (gameWin.highlightedButton.x == button.x && gameWin.highlightedButton.y == button.y) return;
 
     // Removes the highlight from the previous button
-    if (highlightedButton.x != -1 && highlightedButton.y != -1) {
-        consolePointer(highlightedButton.x-2, highlightedButton.y);
-        //consoleColor(15, backgroundColor);
-        printf("  %s  ", (const char*)highlightedButton.label);
+    if (gameWin.highlightedButton.x != -1 && gameWin.highlightedButton.y != -1) {
+        consolePointer(gameWin.highlightedButton.x, gameWin.highlightedButton.y);
+        consoleColor(8, 0);
+        printf("  %s  ", (const char*)gameWin.highlightedButton.label);
     }
 
-    highlightedButton.x = button.x;
-    highlightedButton.y = button.y;
-    strcpy((char*)highlightedButton.label, (char*)button.label);
+    gameWin.highlightedButton.x = button.x;
+    gameWin.highlightedButton.y = button.y;
+    strcpy((char*)gameWin.highlightedButton.label, (char*)button.label);
 
     if (isMouseInRect(button.x, button.y, button.width, button.height)) {
-        consolePointer(button.x-2, button.y);
-        //consoleColor(backgroundColor, 15);
+        consolePointer(button.x, button.y);
+        consoleColor(15, 0);
         printf("~ %s ~", (const char*)button.label);
     } else {
-        consolePointer(button.x-2, button.y);
-        //consoleColor(15, backgroundColor);
+        consolePointer(button.x, button.y);
+        consoleColor(8, 0);
         printf("  %s  ", (const char*)button.label);
     }
 }

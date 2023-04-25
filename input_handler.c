@@ -9,14 +9,6 @@
 // THIS IS WHERE INPUTS ARE PROCESSED
 
 
-// Default character size in pixels (Currently not automatically adjusted)
-int termCharWidth = 8;
-int termCharHeight = 16;
-
-// Margins to center the game assets (Automatically adjusted)
-double leftMargin = 0;
-double topMargin = 0;
-
 
 // --- FUNCTIONS ---
 
@@ -47,8 +39,8 @@ POINT getTMousePos() {
 
     POINT tMousePos;
 
-    tMousePos.x = (mousePos.x-leftMargin) / termCharWidth;
-    tMousePos.y = (mousePos.y-topMargin)  / termCharHeight;
+    tMousePos.x = (mousePos.x*0.883-gameWin.leftMargin) / gameWin.termCharWidth;
+    tMousePos.y = (mousePos.y*0.883-gameWin.topMargin)  / gameWin.termCharHeight;
 
     return tMousePos;
 }
@@ -61,17 +53,18 @@ POINT getMouseBoardTilePos() {
     POINT tMousePos = getTMousePos();
     POINT boardMousePos;
 
-    int boardHorizontalOffset = consoleWidth/2 - 45; // Horizontal offset of the left side of the left board from the left side of the console
+    int boardHorizontalOffset = gameWin.consoleWidth/2 - 45; // Horizontal offset of the left side of the left board from the left side of the console
     int boardHorizontalSize = 41; // Width of each board in characters
+    int boardVerticalOffset = gameWin.boardVerticalOffset;
     int boardVerticalSize = 21; // Height of each board in characters
     // Note: the vertical offset is already defined in the console_handler.h file
 
     if (tMousePos.x >= boardHorizontalOffset && tMousePos.x <= boardHorizontalOffset+boardHorizontalSize && tMousePos.y >= boardVerticalOffset+1 && tMousePos.y <= boardVerticalOffset+boardVerticalSize) {
-        boardMousePos.x = (tMousePos.x - boardHorizontalOffset - leftMargin  -4)/8   +1;
-        boardMousePos.y = (tMousePos.y - boardVerticalOffset   - topMargin   -1)/4   +1;
+        boardMousePos.x = (tMousePos.x - boardHorizontalOffset - gameWin.leftMargin  -4)/8   +1;
+        boardMousePos.y = (tMousePos.y - boardVerticalOffset   - gameWin.topMargin   -1)/4   +1;
     } else if (tMousePos.x >= boardHorizontalOffset+boardHorizontalSize+4 && tMousePos.x <= boardHorizontalOffset+2*boardHorizontalSize+4 && tMousePos.y >= boardVerticalOffset+1 && tMousePos.y <= boardVerticalOffset+boardVerticalSize) {
-        boardMousePos.x = (tMousePos.x - boardHorizontalOffset - leftMargin    )/8     ;
-        boardMousePos.y = (tMousePos.y - boardVerticalOffset   - topMargin   -1)/4   +1;
+        boardMousePos.x = (tMousePos.x - boardHorizontalOffset - gameWin.leftMargin    )/8     ;
+        boardMousePos.y = (tMousePos.y - boardVerticalOffset   - gameWin.topMargin   -1)/4   +1;
     } else{
         boardMousePos.x = -1;
         boardMousePos.y = -1;

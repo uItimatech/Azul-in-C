@@ -20,27 +20,47 @@ struct BUTTON{
 
 typedef struct BUTTON BUTTON;
 
-extern int DEBUG_MODE;
-extern int MAIN_MENU;
-extern int OPTIONS_MENU;
-extern int IN_GAME;
-extern int END_MENU;
+struct GAMEWINDOW{
+    int DEBUG_MODE;
 
-// Display state is used to prevent the interface from being redrawn every frame
-extern int DISPLAY_STATE;
+    int MAIN_MENU;
+    int IN_GAME;
+    int END_MENU;
 
-// Used to remove highlighting from the tiles
-extern int highlightedTile[];
+    // Display state is used to prevent the interface from being redrawn every frame
+    int DISPLAY_STATE;
 
-extern const int backgroundColor;
+    char Title[16];
 
-extern const int boardVerticalOffset;
+    int backgroundColor;
 
-extern const int menuVerticalOffset;
+    int boardVerticalOffset;
 
-// Default console width to center the game assets (Automatically adjusted)
-extern int consoleWidth;
-extern int consoleHeight;
+    int menuVerticalOffset;
+
+    // Default console width to center the game assets (Automatically adjusted)
+    int consoleWidth;
+    int consoleHeight;
+
+    // Used to remove highlighting from the tiles
+    int highlightedTile[2];
+
+    BUTTON highlightedButton;
+
+    // Default character size in pixels (Currently not automatically adjusted)
+    int termCharWidth;
+    int termCharHeight;
+
+    // Margins to center the game assets (Automatically adjusted)
+    double leftMargin;
+    double topMargin;
+
+};
+
+typedef struct GAMEWINDOW GAMEWINDOW;
+
+extern GAMEWINDOW gameWin;
+
 
 // Stores the tiles in an array of matrices
 extern const char *tileSprites[12][3];
@@ -77,6 +97,9 @@ void consoleColor(int color, int background);
 
 // Creates a button
 BUTTON createButton(int x, int y, int width, int height, const char *label);
+
+// Creates a game window
+GAMEWINDOW createGameWindow();
 
 // Prints the logo
 void printLogo(int y);
