@@ -20,6 +20,15 @@ struct BUTTON{
 
 typedef struct BUTTON BUTTON;
 
+extern int DEBUG_MODE;
+extern int MAIN_MENU;
+extern int OPTIONS_MENU;
+extern int IN_GAME;
+extern int END_MENU;
+
+// Display state is used to prevent the interface from being redrawn every frame
+extern int DISPLAY_STATE;
+
 // Used to remove highlighting from the tiles
 extern int highlightedTile[];
 

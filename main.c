@@ -29,6 +29,9 @@ int main(){
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     RECT windowRect;
 
+    // Sets the console title
+    SetConsoleTitle("Azul");
+
 
     // Random seed
     srand(time(NULL));
@@ -38,8 +41,10 @@ int main(){
 
     // Updates the console width
     if (GetConsoleScreenBufferInfo(console, &csbi)) {
-        consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-        consoleHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        //consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        //consoleHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        consoleWidth = GetSystemMetrics(SM_CXSCREEN)/termCharWidth;
+        consoleHeight = GetSystemMetrics(SM_CYSCREEN)/termCharHeight;
     }
 
     // Menu buttons displacement
@@ -73,9 +78,13 @@ int main(){
         consolePointer(0, 40);
         consoleColor(15, 0);
 
+        printf("Console size: %ld, %ld\n", consoleWidth, consoleHeight);
         printf("Console position: %1f, %1f\n", leftMargin, topMargin);
         printf("Mouse position: %1ld, %1ld\n", getTMousePos().x, getTMousePos().y);
         printf("Mouse board position: %ld, %ld", getMouseBoardTilePos().x, getMouseBoardTilePos().y);
+
+        //consolePointer(getTMousePos().x, getTMousePos().y);
+        //printf("X");
         }
 
         if (MAIN_MENU) {
@@ -119,7 +128,8 @@ int main(){
         }
 
         if (IN_GAME) {
-            if (!DISPLAY_STATE) {clearConsole(); printPlayerInterface(game.players[game.currentPlayer]); DISPLAY_STATE = 1;}
+            if (!DISPLAY_STATE) {clearConsole(); //printPlayerInterface(game.players[game.currentPlayer]); 
+            DISPLAY_STATE = 1;}
 
             highlightTile(getMouseBoardTilePos().x, getMouseBoardTilePos().y);
         }

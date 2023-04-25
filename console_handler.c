@@ -9,9 +9,18 @@
 // THIS IS WHERE THE BOARD IS RENDERED
 
 
+int DEBUG_MODE   = 0; // Displays additional information in the console
+int MAIN_MENU    = 1;
+int OPTIONS_MENU = 0;
+int IN_GAME      = 0;
+int END_MENU     = 0;
+
+int DISPLAY_STATE = 0;
+
+
 const int backgroundColor = 8;
 
-const int boardVerticalOffset = 32;
+const int boardVerticalOffset = 25;
 
 const int menuVerticalOffset = 10;
 
@@ -208,8 +217,8 @@ void clearConsole() {
 void consolePointer(int x, int y) {
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD pos; // Struct type defined in windows.h
-    pos.X=x;
-    pos.Y=y;
+    pos.X=x-8;
+    pos.Y=y-8;
     SetConsoleCursorPosition(hStdout, pos);
 }
 
@@ -468,7 +477,7 @@ void highlightButton(BUTTON button) {
     if (isMouseInRect(button.x, button.y, button.width, button.height)) {
         consolePointer(button.x-2, button.y);
         //consoleColor(backgroundColor, 15);
-        printf("- %s -", (const char*)button.label);
+        printf("~ %s ~", (const char*)button.label);
     } else {
         consolePointer(button.x-2, button.y);
         //consoleColor(15, backgroundColor);

@@ -37,10 +37,6 @@ double topMargin = 0;
 POINT getMousePos() {
     POINT mousePos;
     GetCursorPos(&mousePos);
-
-    mousePos.x -= leftMargin/2; //414
-    mousePos.y -= topMargin/2; //46
-
     return mousePos;
 }
 
@@ -48,6 +44,7 @@ POINT getMousePos() {
 POINT getTMousePos() {
 
     POINT mousePos = getMousePos();
+
     POINT tMousePos;
 
     tMousePos.x = (mousePos.x-leftMargin) / termCharWidth;

@@ -24,15 +24,6 @@ const int emptySideBoardMatrix[5][5] = {
     { 1, 1, 1, 1, 1}
 };
 
-int DEBUG_MODE   = 0; // Displays additional information in the console
-int MAIN_MENU    = 1;
-int OPTIONS_MENU = 0;
-int IN_GAME      = 0;
-int END_MENU     = 0;
-
-int DISPLAY_STATE = 0;
-
-
 
 // --- ROUND MANAGEMENT FUNCTIONS ---
 
