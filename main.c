@@ -125,14 +125,23 @@ int main(){
         }
 
         if (gameWin.IN_GAME) {
-            if (!gameWin.DISPLAY_STATE) {clearConsole(); printPlayerInterface(game.players[0]); gameWin.DISPLAY_STATE = 1;}
+            if (!gameWin.DISPLAY_STATE) {
+                clearConsole(); 
+                gameWin.DISPLAY_STATE = 1;
+                printFactories(game.tileFactories);
+                printPlayerInterface(game.players[0]);
+            }
 
             highlightTile(getMouseBoardTilePos().x, getMouseBoardTilePos().y);
         }
 
         if (gameWin.END_MENU) {
             if (!gameWin.DISPLAY_STATE) {clearConsole(); printEndMenu(); gameWin.DISPLAY_STATE = 1;}}
+    
+        // Exits if the user presses ESC
+        if (GetAsyncKeyState(VK_ESCAPE)) {
+            return 0;
+        }
     }
-
     return 0;
 }

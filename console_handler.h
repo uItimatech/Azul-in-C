@@ -122,6 +122,8 @@ void printSideBoard(int board[5][5]);
 // Prints a given player's interface (board, side board, score, id)
 void printPlayerInterface(PlayerStruct player);
 
+void printFactories(TileFactoryStruct factories[9]);
+
 // Prints the menu
 void printMenu();
 

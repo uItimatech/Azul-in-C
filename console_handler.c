@@ -150,7 +150,7 @@ const char *logoSprite[35] = {
 
 // Stores the credits
 const char *credits[2] = {
-    "A game by Michael Kiesling, recreated in C by Evan Werquin and Quentin Thouvier",
+    "A game by Michael Kiesling, recreated in C by Evan Werquin",
     "This game is licensed under the GNU General Public License v3.0"
 };
 
@@ -385,6 +385,7 @@ void printSideBoard(int board[5][5]) {
 
 // Prints a given player's interface (board, side board, score, id)
 void printPlayerInterface(PlayerStruct player){
+
     printBackground();
     printGameBoard(player.boardMatrix);
     printSideBoard(player.sideBoardMatrix);
@@ -395,6 +396,27 @@ void printPlayerInterface(PlayerStruct player){
     printf("Score: %d", player.score);
     consolePointer(gameWin.consoleWidth/2 - 43, gameWin.boardVerticalOffset-3);
     printf("Player #%d", 0);
+}
+
+// Prints the factories
+void printFactories(TileFactoryStruct factories[9]) {
+    int x = gameWin.consoleWidth/2 - 45;
+    int y = 2;
+
+    // Prints 5 factories on 2 lines of tiles and 4 on the bottom
+    // Each factory has 4 tiles that are printed in a 2x2 matrix
+    // Each tile is 8 characters wide and 4 characters tall
+    for (int i = 0; i < 9; i++) {
+        consolePointer(x, y);
+        for (int j = 0; j < 4; j++) {
+            printTile(factories[i].tiles[j], x+3+j*8, y);
+        }
+        x += 40;
+        if (i == 4) {
+            x = gameWin.consoleWidth/2 - 45;
+            y += 5;
+        }
+    }
 }
 
 // Prints the menu
