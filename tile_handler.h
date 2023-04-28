@@ -17,27 +17,29 @@ void resetFactory(TileFactoryStruct* tileFactory);
 // Resets the tile bank to 100 tiles
 void resetTileBank(TileBankStruct* tileBank);
 
+// Resets the center bank to 0 tiles
+void resetCenterBank(TileBankStruct* centerBank);
+
 // Shuffles the tile bank
 void shuffleTileBank(TileBankStruct* tileBank);
 
 // Picks a random tile from the tile bank
 int pickTileFromBank(TileBankStruct* bank);
 
-// Picks all tiles from a specific color in a specific factory
-// Returns the number of tiles picked and their color
-int pickTilesFromFactory(TileFactoryStruct* factory, int color);
+// Moves all tiles from a specific color in a factory in the given row and removes them
+void moveTilesFromFactory(GameStruct* game, int factory, int tile, int row);
 
-// Tests if the selected tile is a valid move
-int isValidMainBoardMove(int board[5][5], int tile, int row, int col);
+// Moves a tile row from side board to main board
+void moveRowToMain(GameStruct* game, int color, int row, const int board[5][5]);
 
 // Tests if the selected tile row has the correct color or is empty
-int isValidSideBoardMove(int board[5][5], int tileColor, int row);
+int isValidSideBoardMove(GameStruct* game, int factory, int tile, int row);
 
-// Places a tile in the boardMatrix
-void placeMainBoardTile(int board[5][5], int tile, int row, int col);
+// Tests if the selected tile is a valid move
+int isValidMainBoardMove(GameStruct* game, int tile, int row, int col);
 
 // Places a tile in the sideBoardMatrix
-void placeTilesInSideBoard(PlayerStruct* player, int nbTiles, int tileColor, int row);
+void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row);
 
 
 

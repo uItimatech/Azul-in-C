@@ -10,7 +10,6 @@
 #define FACTORY_TILE_COUNT  4
 #define FACTORY_COUNT       9
 
-
 extern const int emptyBoardMatrix[5][5];
 
 extern const int emptySideBoardMatrix[5][5];
@@ -34,7 +33,6 @@ struct TileFactoryStruct {
 
 typedef struct TileFactoryStruct TileFactoryStruct;
 
-
 // Bank
 struct TileBankStruct {
     int tiles[BANK_TILE_COUNT];
@@ -49,6 +47,7 @@ struct GameStruct {
     PlayerStruct         players[PLAYER_COUNT];
     TileFactoryStruct    tileFactories[FACTORY_COUNT];
     TileBankStruct       bank;
+    TileBankStruct       centerBank;
     int                  currentPlayer;
 };
 
@@ -70,16 +69,8 @@ void resetGame(GameStruct* game);
 // Calculates the negative points for the player based on the number of overflowing tiles
 int negativePoints(int overflowingTiles);
 
-
-// Moove tiles from factory to side board
-void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int color, int row);
-
-//Moove tiles from side board to main board
-void moveTilesMainBoard(PlayerStruct* player, int color, int row, const int board[5][5]);
-
 // Starts a new game round
 void gameRound(PlayerStruct* player, TileFactoryStruct* factory);
-
 
 
 

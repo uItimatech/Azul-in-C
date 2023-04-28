@@ -43,6 +43,7 @@ void initGame(GameStruct* game)
 
     // Initializes the tile bank
     resetTileBank(&game->bank);
+    resetCenterBank(&game->centerBank);
     shuffleTileBank(&game->bank);
 
     // Initializes the player's turn
@@ -60,26 +61,6 @@ void initPlayer(PlayerStruct* player)
     }
     player->score = 0;
     player->overflowTiles = 0;
-}
-
-//player chooses factory, tile and its color, then move the tiles of the factory into a row
-void moveTilesSideBoard(PlayerStruct* player, TileFactoryStruct* factory, int color, int row)
-{
-    int numberofTilesPicked;
-
-    numberofTilesPicked = pickTilesFromFactory(factory, color);
-
-    placeTilesInSideBoard(player, numberofTilesPicked, color, row);
-}
-
-//move tiles from side to main board, needs active row and coordinates of main board place
-void moveTilesMainBoard(PlayerStruct* player, int color, int row, const int board[5][5]){
-    int col;
-    for (int i=0 ; i<5 ; i++){
-        if (board[i][row] == color)
-            col = i;
-    }
-    placeMainBoardTile(player->boardMatrix, color, row, col);
 }
 
 void gameRound(PlayerStruct* player, TileFactoryStruct* factory){

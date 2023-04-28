@@ -36,6 +36,8 @@ struct GAMEWINDOW{
 
     int boardVerticalOffset;
 
+    int playerUIVerticalOffset;
+
     int menuVerticalOffset;
 
     // Default console width to center the game assets (Automatically adjusted)
@@ -44,6 +46,7 @@ struct GAMEWINDOW{
 
     // Used to remove highlighting from the tiles
     int highlightedTile[2];
+    int previousBoardState;
 
     BUTTON highlightedButton;
 
@@ -86,7 +89,7 @@ extern BUTTON menuButtons[4];
 // --- PROTOTYPES ---
 
 
-// Toggles fullscreen mode
+// Toggles fullscreen mode and disables quick edit mode for mouse input
 void toggleFullscreen();
 
 // Clears the console
@@ -123,7 +126,7 @@ void printGameBoard(int board[5][5]);
 void printSideBoard(int board[5][5]);
 
 // Prints the current player's interface (board, side board, score, id)
-void printPlayerInterface(GameStruct game);
+void printPlayerUI(GameStruct game);
 
 // Prints the given factory at the given coordinates
 void printFactory(TileFactoryStruct factory, int x, int y);
@@ -145,6 +148,7 @@ void highlightButton(BUTTON button);
 
 // If 'space' is pressed while the mouse is over the button, returns 1
 int isButtonPressed(BUTTON button);
+
 
 
 #endif // __CONSOLE_HANDLER_H__

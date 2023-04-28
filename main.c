@@ -89,6 +89,7 @@ int main(){
             printf("Console position: %1f, %1f      \n", gameWin.leftMargin, gameWin.topMargin);
             printf("Mouse position: %1ld, %1ld      \n", getTMousePos().x, getTMousePos().y);
             printf("Mouse board position: %ld, %ld      ", getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y);
+            printf("Mouse pressed: %d      \n", mousePressed());
 
             //consolePointer(getTMousePos().x, getTMousePos().y);
             //printf("X");
@@ -132,7 +133,7 @@ int main(){
                 clearConsole(); 
                 gameWin.DISPLAY_STATE = 1;
                 printFactories(game.tileFactories);
-                printPlayerInterface(game);
+                printPlayerUI(game);
             }
 
             highlightTile(getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y, gameWin.boardState);

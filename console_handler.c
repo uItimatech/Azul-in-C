@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <windows.h>
+#include <math.h>
 
 #include "console_handler.h"
 #include "game_handler.h"
@@ -168,13 +169,18 @@ BUTTON menuButtons[4];
 // --- CONSOLE AND DISPLAY FUNCTIONS ---
 
 
-// Toggles fullscreen mode
+// Toggles fullscreen mode and disables quick edit mode for mouse input
 void toggleFullscreen()
 {
     keybd_event(VK_MENU,0x38,0,0); // Press 'ALT'
     keybd_event(VK_RETURN,0x1c,0,0); // Press 'ENTER'
     keybd_event(VK_RETURN,0x1c,KEYEVENTF_KEYUP,0); // Release 'ENTER'
     keybd_event(VK_MENU,0x38,KEYEVENTF_KEYUP,0); // Release 'ALT'
+
+    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    DWORD mode = 0;
+    GetConsoleMode(hStdin, &mode);
+    SetConsoleMode(hStdin, mode & (~ENABLE_QUICK_EDIT_MODE));
 }
 
 
@@ -219,7 +225,7 @@ GAMEWINDOW createGameWindow() {
 
     GAMEWINDOW GW;
 
-    GW.DEBUG_MODE   = 1; // Displays additional information in the console
+    GW.DEBUG_MODE   = 0; // Displays additional information in the console
     GW.MAIN_MENU    = 1; // Could use a simple menu ID but this is better for undestanding
     GW.IN_GAME      = 0;
     GW.END_MENU     = 0;
@@ -230,7 +236,9 @@ GAMEWINDOW createGameWindow() {
 
     GW.backgroundColor = 8;
 
-    GW.boardVerticalOffset = 25;
+    GW.boardVerticalOffset = 27;
+
+    GW.playerUIVerticalOffset = 0;
 
     GW.menuVerticalOffset = 1;
 
@@ -241,6 +249,7 @@ GAMEWINDOW createGameWindow() {
     // Used to remove highlighting from the tiles
     GW.highlightedTile[0] = -1;
     GW.highlightedTile[1] = -1;
+    GW.previousBoardState = -1;
 
     GW.highlightedButton = (BUTTON){-1, -1, -1, -1, {""}};
 
@@ -385,7 +394,7 @@ void printSideBoard(int board[5][5]) {
 }
 
 // Prints the current player's interface (board, side board, score, id)
-void printPlayerInterface(GameStruct game){
+void printPlayerUI(GameStruct game){
 
     PlayerStruct player = game.players[game.currentPlayer];
 
@@ -395,9 +404,9 @@ void printPlayerInterface(GameStruct game){
 
     // Prints the player's score and id
     consoleColor(15, gameWin.backgroundColor);
-    consolePointer(gameWin.consoleWidth/2 - 43, gameWin.boardVerticalOffset-1);
+    consolePointer(gameWin.consoleWidth/2 + 44, gameWin.boardVerticalOffset+21);
     printf("Score: %d", player.score);
-    consolePointer(gameWin.consoleWidth/2 - 43, gameWin.boardVerticalOffset-3);
+    consolePointer(gameWin.consoleWidth/2 + 44, gameWin.boardVerticalOffset+19);
     printf("Player #%d", game.currentPlayer+1);
 }
 
@@ -440,7 +449,7 @@ void printFactories(TileFactoryStruct factories[9]) {
 // Prints the menu
 void printMenu(){
 
-    char hint[24] = {"[Press space to select]"};
+    char hint[21] = {"[Use mouse to select]"};
 
     printLogo(gameWin.menuVerticalOffset);
     printCredits(gameWin.menuVerticalOffset+37);
@@ -466,9 +475,6 @@ void printEndMenu(){
 // Higlighting consists of printing a white 7x7 frame arround the given tile
 void highlightTile(int x, int y, int boardState){
 
-    // If the tile is in the main board, adds 5 to the x coordinate
-    if (boardState==2) x += 5;
-
     consolePointer(gameWin.consoleWidth, gameWin.consoleHeight);
 
     int yDisplacement = gameWin.boardVerticalOffset;
@@ -483,14 +489,14 @@ void highlightTile(int x, int y, int boardState){
     // Displacement is used to move the highlighted tile to the right if the tile is in the right side of the board
     int displacement = 0;
 
-    if (prevX>5) displacement = 5;
+    if (gameWin.previousBoardState == 1 || gameWin.previousBoardState == 2) displacement = 5;
 
     // Removes the highlight from the previous tile by highlighting it with the background color
-    consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement, prevY*4 + yDisplacement - 3);
+    //consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement, prevY*4 + yDisplacement - 3);
     consoleColor(gameWin.backgroundColor, gameWin.backgroundColor);
 
     // Removes highlight for board tiles
-    if ((boardState == 1 || boardState == 2) && (prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
+    if ((gameWin.previousBoardState == 1 || gameWin.previousBoardState == 2) && (prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
                 consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
@@ -498,50 +504,83 @@ void highlightTile(int x, int y, int boardState){
                 // Places the highlight on the right side of the side board
                 if (prevX<6) consolePointer(gameWin.consoleWidth/2 - 85/2 + 31 + displacement + j, prevY*4 + yDisplacement - 3 + i);
 
+                // Prints the highlight frame
                 if ((i == 0 || i == 4 || j == 0 || j == 8) && prevX>5) printf("%c", 219);
                 if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && prevX<6) printf("%c", 219);
             }
         }
 
-    // Highlights factory tiles
-    } else if (boardState == 0 && prevX != -1 && prevY != -1) {
-        // ADD CODE HERE
+    // Removes highlights factory tiles
+    } else if (gameWin.previousBoardState == 3 && prevX != -1 && prevY != -1) {
+
+        // Highlights the current tile
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+
+                // If the tile is in the first row of the factorprevY
+                if (prevX<5) consolePointer(gameWin.consoleWidth/2 +prevX*18+j     -44 +floor(prevY%2)*8, i+2  +floor(prevY/2)*4);
+                // If the tile is in the second row of the factorprevY
+                if (prevX>4) consolePointer(gameWin.consoleWidth/2 +(prevX-5)*18+j -36 +floor(prevY%2)*8, i+12 +floor(prevY/2)*4);
+
+                // Creates the highlight frame
+                if ((i == 0 || i == 4 || j == 0 || j == 8)) printf("%c", 219);
+            }
+        }
     }
+
+
+    // If the tile is in the main board, adds 5 to the x coordinate
+    if (boardState==2) x += 5;
+    
 
     // Updates the currently highlighted tile id
     gameWin.highlightedTile[0] = x;
     gameWin.highlightedTile[1] = y;
+    gameWin.previousBoardState = boardState;
+
+    consoleColor(15,0);
 
     // Highlights main board tiles
-    if ((boardState == 1 || boardState == 2) && (x != -1 && y != -1) && (x != 11 && y != 6)) {
+    if ((boardState == 1 || boardState == 2) && (x != 11 && y != 6) && (x != -1 && y != -1)) {
 
         displacement = 0;
 
         if (x>5) displacement = 5;
 
         // Highlights the current tile
-        consolePointer(x*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement, y*4 + yDisplacement - 3);
-        consoleColor(15, 0);
-
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
                 consolePointer(x*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, y*4 + yDisplacement - 3 + i);
 
                 // Places the highlight on the right side of the side board
-                if (x<6) consolePointer(gameWin.consoleWidth/2 - 85/2 + 31 + displacement + j, y*4 + yDisplacement - 3 + i);
+                if (boardState==1) consolePointer(gameWin.consoleWidth/2 - 85/2 + 31 + displacement + j, y*4 + yDisplacement - 3 + i);
 
+                // Creates the highlight frame
                 if ((i == 0 || i == 4 || j == 0 || j == 8) && x>5) printf("%c", 219);
                 if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && x<6) printf("%c", 219);
             }
         }
 
     // Highlights factory tiles
-    } else if (boardState == 0 && prevX != -1 && prevY != -1) {
-        // ADD CODE HERE
+    } else if (boardState == 3  && (x != -1 && y != -1)) {
 
-    } else {
-        return;
+        // Highlights the current tile
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+
+                // If the tile is in the first row of the factory
+                if (x<=4) consolePointer(gameWin.consoleWidth/2 +x*18+j     -44 +round(y%2)*8, i+2  +round(y/2)*4);
+                // If the tile is in the second row of the factory
+                if (x>=5) consolePointer(gameWin.consoleWidth/2 +(x-5)*18+j -36 +round(y%2)*8, i+12 +round(y/2)*4);
+
+                // Creates the highlight frame
+                if ((i == 0 || i == 4 || j == 0 || j == 8)) printf("%c", 219);
+            }
+        }
     }
+
+    consolePointer(0,0);
+    consoleColor(15,0);
 }
 
 // Highlights the given button if the mouse is over it
@@ -555,7 +594,7 @@ void highlightButton(BUTTON button) {
     // Removes the highlight from the previous button
     if (gameWin.highlightedButton.x != -1 && gameWin.highlightedButton.y != -1) {
         consolePointer(gameWin.highlightedButton.x, gameWin.highlightedButton.y);
-        consoleColor(8, 0);
+        consoleColor(gameWin.backgroundColor, 0);
         printf("  %s  ", (const char*)gameWin.highlightedButton.label);
     }
 
@@ -569,17 +608,17 @@ void highlightButton(BUTTON button) {
         printf("~ %s ~", (const char*)button.label);
     } else {
         consolePointer(button.x, button.y);
-        consoleColor(8, 0);
+        consoleColor(gameWin.backgroundColor, 0);
         printf("  %s  ", (const char*)button.label);
     }
 }
 
-// If 'space' is pressed while the mouse is over the button, returns 1
+// If mouse is pressed while the mouse is over the button, returns 1
 int isButtonPressed(BUTTON button) {
     if (isMouseInRect(button.x, button.y, button.width, button.height)) {
-        if (GetAsyncKeyState(VK_SPACE)) {
+        if (mousePressed()) {
             // wait for the space key to be released
-            while (GetAsyncKeyState(VK_SPACE));
+            while (mousePressed());
 
             // checks if the mouse is still over the button
             if (isMouseInRect(button.x, button.y, button.width, button.height))

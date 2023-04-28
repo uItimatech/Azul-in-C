@@ -20,6 +20,15 @@ void resetTileBank(TileBankStruct* tileBank)
     tileBank->nbTilesRemaining = BANK_TILE_COUNT;
 }
 
+// Resets the center bank to 0 tiles
+void resetCenterBank(TileBankStruct* centerBank)
+{
+    for (int i=0; i<BANK_TILE_COUNT; i++) {
+        centerBank->tiles[i] = 0;
+    }
+    centerBank->nbTilesRemaining = 0;
+}
+
 void resetFactory(TileFactoryStruct* tileFactory)
 {
     for (int i=0; i<FACTORY_TILE_COUNT; i++) {
@@ -34,36 +43,7 @@ void refillFactory(TileBankStruct* bank, TileFactoryStruct* tileFactory) {
     }
 }
 
-// Picks the last tile from the tile bank
-// returns the tile color
-int pickTileFromBank(TileBankStruct* bank) {
-    int tile = 0;
-    if (bank->nbTilesRemaining > 0) {
-        tile = bank->tiles[bank->nbTilesRemaining - 1];
-        bank->nbTilesRemaining--;
-    }
-    return tile;
-}
-
-
-// Picks all tiles from a specific color in a specific factory
-// Returns the number of tiles picked
-int pickTilesFromFactory(TileFactoryStruct* factory, int color) {
-    int pickedTiles = 0;
-
-    for (int i = 0; i < FACTORY_TILE_COUNT; i++) {
-        if (factory->tiles[i] == color) {
-            factory->tiles[i] = 0;
-            pickedTiles++;
-        }
-    }
-
-    return pickedTiles;
-}
-
-
-// Shuffles the tile bank
-// swap elements randomly
+// Shuffles the tile bank (swap elements randomly)
 void shuffleTileBank(TileBankStruct* bank) {
     for (int i = 0; i < BANK_TILE_COUNT; i++) {
         int j = rand() % BANK_TILE_COUNT;
@@ -73,62 +53,80 @@ void shuffleTileBank(TileBankStruct* bank) {
     }
 }
 
+// Picks the last tile from the tile bank
+// returns the tile color
+int pickTileFromBank(TileBankStruct* bank) {
+    int tile = 0;
 
-
-// Tests if the selected tile is a valid move
-// A valid moves means an empty tile and a correct id in the emptyBoardMatrix
-int isValidMainBoardMove(int board[5][5], int tile, int row, int col) {
-
-    if (board[row][col] == 0 && emptyBoardMatrix[row][col] == tile) {
-        return 1;
+    if (bank->nbTilesRemaining > 0) {
+        tile = bank->tiles[bank->nbTilesRemaining - 1];
+        bank->nbTilesRemaining--;
     }
-    else {
-        return 0;
+
+    return tile;
+}
+
+// Moves all tiles from a specific color in a specific factory
+void moveTilesFromFactory(GameStruct* game, int factory, int tile, int row) {
+    int color = game->tileFactories[factory].tiles[tile];
+
+    for (int i = 0; i < FACTORY_TILE_COUNT; i++) {
+        if (game->tileFactories[factory].tiles[i] == color) {
+            game->tileFactories[factory].tiles[i] = 0;
+            placeTileInSideBoard(&game->players[game->currentPlayer], color, row);
+        } else {
+            game->centerBank.tiles[game->centerBank.nbTilesRemaining] = game->tileFactories[factory].tiles[i];
+            game->centerBank.nbTilesRemaining++;
+        }
     }
+}
+
+// Moves a tile row from side board to main board
+void moveRowToMain(GameStruct* game, int color, int row, const int board[5][5]){
+    int col;
+
+    for (int i=0 ; i<5 ; i++){
+        if (board[i][row] == color)
+            col = i;
+    }
+
+    game->players[game->currentPlayer].boardMatrix[row][col] = color;
 }
 
 // Tests if the selected tile row has the correct color or is empty
-int isValidSideBoardMove(int board[5][5], int tileColor, int row) {
-    int ret = 0;
+int isValidSideBoardMove(GameStruct* game, int factory, int tile, int row) {
 
-    if (board[row][4] == 0 || board[row][4] == tileColor) {
-        ret = 1;
+    int firstRowTile = game->players[game->currentPlayer].sideBoardMatrix[row][4];
+
+    if (firstRowTile == 0 || firstRowTile == game->tileFactories[factory].tiles[tile]) {
+        return 1;
     }
-
-    return ret;
+    return 0;
 }
 
-// Places tiles at the end of the side board, if the row is full, the tile is placed in the overflow
-// The first row has 1 tile, the second row has 2 tiles, the third row has 3 tiles, the fourth row has 4 tiles and the fifth row has 5 tiles
-// a revoir NbTiles
-// a revoir NbTiles
-void placeTilesInSideBoard(PlayerStruct* player, int nbTiles, int tileColor, int row) {
+// Tests if the selected tile is a valid move
+// A valid moves means an empty tile and a correct id in the emptyBoardMatrix
+int isValidMainBoardMove(GameStruct* game, int tile, int row, int col) {
 
-    if (isValidSideBoardMove(player->sideBoardMatrix, tileColor, row)) {
-
-        // Detects how many tiles of this color are already in the row
-        int tilesInRow = 0;
-        for (int i = 0; i < 5; i++) {
-            if (player->sideBoardMatrix[row][i] == tileColor) {
-                tilesInRow++;
-            }
-        }
-
-        // Places the tiles in the row
-        for (int i = 0; i < nbTiles; i++) {
-            if (tilesInRow < 5) {
-                player->boardMatrix[4-row][tilesInRow] = tileColor;
-                tilesInRow++;
-        } else {
-                player->overflowTiles++;
-            }
-        }
+    if (game->players[game->currentPlayer].boardMatrix[row][col] == 0 && emptyBoardMatrix[row][col] == tile) {
+        return 1;
     }
+    return 0;
 }
 
-// Places a tile in the boardMatrix if it is a valid move
-void placeMainBoardTile(int board[5][5], int tile, int row, int col) {
-    if (isValidMainBoardMove(board, tile, row, col)) {
-        board[row][col] = tile;
+// Places a tile at the end of the side board, if the row is full, the tile is placed in the overflow
+void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row) {
+
+    // Detects how many tiles of this color are already in the row
+    int tilesInRow = 0;
+
+    while (player->sideBoardMatrix[row][tilesInRow] == tileColor && tilesInRow<5) tilesInRow++;
+
+    // Places the tile in the row
+    if (tilesInRow < 5) {
+        player->boardMatrix[4-row][tilesInRow] = tileColor;
+        tilesInRow++;
+    } else {
+        player->overflowTiles++;
     }
 }
