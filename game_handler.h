@@ -49,6 +49,7 @@ struct GameStruct {
     TileBankStruct       bank;
     TileBankStruct       centerBank;
     int                  currentPlayer;
+    int                  priorityPlayer;
 };
 
 typedef struct GameStruct GameStruct;
@@ -69,8 +70,11 @@ void resetGame(GameStruct* game);
 // Calculates the negative points for the player based on the number of overflowing tiles
 int negativePoints(int overflowingTiles);
 
-// Starts a new game round
-void gameRound(PlayerStruct* player, TileFactoryStruct* factory);
+// Starts a game round
+void gameRound(GameStruct* game);
+
+// Tests if the game is over (one player has a full row)
+int isGameOver(GameStruct game);
 
 
 

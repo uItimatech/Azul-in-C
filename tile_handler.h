@@ -11,8 +11,9 @@
 // --- PROTOTYPES ---
 
 
-// Resets a factory
-void resetFactory(TileFactoryStruct* tileFactory);
+
+// Refills all factories with tile from the tile bank
+void refillFactory();
 
 // Resets the tile bank to 100 tiles
 void resetTileBank(TileBankStruct* tileBank);
@@ -32,14 +33,17 @@ void moveTilesFromFactory(GameStruct* game, int factory, int tile, int row);
 // Moves a tile row from side board to main board
 void moveRowToMain(GameStruct* game, int color, int row, const int board[5][5]);
 
+// Places a tile in the sideBoardMatrix
+void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row);
+
 // Tests if the selected tile row has the correct color or is empty
 int isValidSideBoardMove(GameStruct* game, int factory, int tile, int row);
 
 // Tests if the selected tile is a valid move
 int isValidMainBoardMove(GameStruct* game, int tile, int row, int col);
 
-// Places a tile in the sideBoardMatrix
-void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row);
+// Tests if all factories are empty
+int areFactoriesEmpty(GameStruct* game);
 
 
 

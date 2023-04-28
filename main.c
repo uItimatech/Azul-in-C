@@ -60,10 +60,8 @@ int main(){
 
     // Initializes the game
     GameStruct game;
+    
     initGame(&game);
-
-
-    gameWin.boardState = 3; // TESTING ONLY
 
 
 
@@ -100,7 +98,6 @@ int main(){
 
             // Play button
             if (isButtonPressed(menuButtons[0])) {
-                resetGame(&game);
                 gameWin.IN_GAME = 1;
                 gameWin.MAIN_MENU = 0;
                 gameWin.DISPLAY_STATE = 0;
@@ -132,11 +129,10 @@ int main(){
             if (!gameWin.DISPLAY_STATE) {
                 clearConsole(); 
                 gameWin.DISPLAY_STATE = 1;
-                printFactories(game.tileFactories);
-                printPlayerUI(game);
             }
 
-            highlightTile(getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y, gameWin.boardState);
+            // Starts a new game round until the game is over
+            while (!isGameOver(game)) gameRound(&game);
         }
 
         if (gameWin.END_MENU) {

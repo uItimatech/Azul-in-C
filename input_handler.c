@@ -72,7 +72,7 @@ POINT getMouseBoardTilePos(int boardState) {
         boardMousePos.x = (tMousePos.x - boardHorizontalOffset - gameWin.leftMargin -4)/8   +1;
         boardMousePos.y = (tMousePos.y - boardVerticalOffset   - gameWin.topMargin  -1)/4   +1;
 
-    // Check if the mouse is in the main board
+    // Check if the mouse is in the main board (Not used currently in a game but still useful for debugging)
     } else if (boardState == 2 && tMousePos.x >= boardHorizontalOffset+boardHorizontalSize+4 && tMousePos.x <= boardHorizontalOffset+2*boardHorizontalSize+4 && tMousePos.y >= boardVerticalOffset+1 && tMousePos.y <= boardVerticalOffset+boardVerticalSize) {
         boardMousePos.x = (tMousePos.x - boardHorizontalOffset - gameWin.leftMargin   )/8   -5;
         boardMousePos.y = (tMousePos.y - boardVerticalOffset   - gameWin.topMargin  -1)/4   +1;

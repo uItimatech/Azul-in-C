@@ -126,7 +126,7 @@ void printGameBoard(int board[5][5]);
 void printSideBoard(int board[5][5]);
 
 // Prints the current player's interface (board, side board, score, id)
-void printPlayerUI(GameStruct game);
+void printPlayerUI(GameStruct* game);
 
 // Prints the given factory at the given coordinates
 void printFactory(TileFactoryStruct factory, int x, int y);

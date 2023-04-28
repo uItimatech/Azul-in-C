@@ -39,23 +39,23 @@ const char *tileSprites[12][3] = {
     },
     // EMPTY TILES (FOR THE EMPTY BOARD LAYOUT)
     {
-        ".     .",
+        "       ",
         "  Blu  ",
         ".     ."
     },{
-        ".     .",
+        "       ",
         "  Yel  ",
         ".     ."
     },{
-        ".     .",
+        "       ",
         "  Red  ",
         ".     ."
     },{
-        ".     .",
+        "       ",
         "  Blk  ",
         ".     ."
     },{
-        ".     .",
+        "       ",
         "  Tuq  ",
         ".     ."
     },{
@@ -67,42 +67,42 @@ const char *tileSprites[12][3] = {
 
 const int tileColors[12][2] = {
     // Format: {BACKGROUND COLOR, TEXT COLOR}
-    {// BLANK TILE
+    { // BLANK TILE
         0,
         8
-    },{// BLUE TILE
+    },{ // BLUE TILE
         1,
         9
-    },{// YELLOW TILE
+    },{ // YELLOW TILE
         14,
         6
-    },{// RED TILE
+    },{ // RED TILE
         4,
-        12
-    },{// BLACK TILE
-        16,
+        15
+    },{ // BLACK TILE
+        0,
         1
-    },{// TURQUOISE TILE
+    },{ // TURQUOISE TILE
         3,
         7
     },
     // EMPTY TILES (FOR THE EMPTY BOARD LAYOUT)
-    {
+    { // BLUE
         1,
         9
-    },{
+    },{ // YELLOW
         14,
         6
-    },{
+    },{ // RED
         4,
         12
-    },{
-        16,
-        1
-    },{
+    },{ // BLACK
+        0,
+        8
+    },{ // TURQUOISE
         3,
-        7
-    },{
+        1
+    },{ // EMPTY
         8,
         8
     }
@@ -160,6 +160,13 @@ const char *menuButtonLabels[4] = {
     "Play",
     "Rules",
     "Quit"
+};
+
+// Stores the hints
+const char *gameHints[5] = {
+    "Select a tile color in one of the factories or the center",
+    "Select a row to place the tile(s) in",
+    ""
 };
 
 BUTTON menuButtons[4];
@@ -394,9 +401,9 @@ void printSideBoard(int board[5][5]) {
 }
 
 // Prints the current player's interface (board, side board, score, id)
-void printPlayerUI(GameStruct game){
+void printPlayerUI(GameStruct *game){
 
-    PlayerStruct player = game.players[game.currentPlayer];
+    PlayerStruct player = game->players[game->currentPlayer];
 
     printBackground(gameWin.consoleWidth/2-43, gameWin.boardVerticalOffset+1, 86, 21);
     printGameBoard(player.boardMatrix);
@@ -407,7 +414,7 @@ void printPlayerUI(GameStruct game){
     consolePointer(gameWin.consoleWidth/2 + 44, gameWin.boardVerticalOffset+21);
     printf("Score: %d", player.score);
     consolePointer(gameWin.consoleWidth/2 + 44, gameWin.boardVerticalOffset+19);
-    printf("Player #%d", game.currentPlayer+1);
+    printf("Player #%d", game->currentPlayer+1);
 }
 
 // Prints the given factory at the given coordinates
@@ -479,17 +486,16 @@ void highlightTile(int x, int y, int boardState){
 
     int yDisplacement = gameWin.boardVerticalOffset;
 
-    // If the tile is already highlighted, returns
-    if (gameWin.highlightedTile[0] == x && gameWin.highlightedTile[1] == y) return;
-
-    // If the current tile is different from the previous tile, removes the highlight from the previous tile
     int prevX = gameWin.highlightedTile[0];
     int prevY = gameWin.highlightedTile[1];
+
+    // If the tile is already highlighted, returns
+    if (prevX == x && prevY == y) return;
 
     // Displacement is used to move the highlighted tile to the right if the tile is in the right side of the board
     int displacement = 0;
 
-    if (gameWin.previousBoardState == 1 || gameWin.previousBoardState == 2) displacement = 5;
+    if (gameWin.previousBoardState == 2) displacement = 5;
 
     // Removes the highlight from the previous tile by highlighting it with the background color
     //consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement, prevY*4 + yDisplacement - 3);
@@ -497,7 +503,7 @@ void highlightTile(int x, int y, int boardState){
 
     // Removes highlight for board tiles
     if ((gameWin.previousBoardState == 1 || gameWin.previousBoardState == 2) && (prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
-        for (int i = 0; i < 5; i++) {
+        /*for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
                 consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
 
@@ -506,7 +512,18 @@ void highlightTile(int x, int y, int boardState){
 
                 // Prints the highlight frame
                 if ((i == 0 || i == 4 || j == 0 || j == 8) && prevX>5) printf("%c", 219);
-                if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && prevX<6) printf("%c", 219);
+                if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && prevX<6) printf("%c", 219);*/
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+                consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
+
+                // Places the highlight on the right side of the side board
+                if (gameWin.previousBoardState==1) consolePointer(gameWin.consoleWidth/2 - 85/2 + 31 + displacement + j, prevY*4 + yDisplacement - 3 + i);
+
+                // Creates the highlight frame
+                if ((i == 0 || i == 4 || j == 0 || j == 8) && gameWin.previousBoardState==2) printf("%c", 219);
+                if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && gameWin.previousBoardState==1) printf("%c", 219);
             }
         }
 
