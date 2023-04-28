@@ -19,7 +19,7 @@ POINT getMousPos();
 POINT getTMousePos();
 
 // Returns mouse coordinates on the game boards as a POINT struct
-POINT getMouseBoardTilePos();
+POINT getMouseBoardTilePos(int tileState);
 
 // Returns 1 if the mouse is in the specified rectangle, 0 otherwise
 int isMouseInRect(int x, int y, int width, int height);

@@ -44,6 +44,9 @@ void initGame(GameStruct* game)
     // Initializes the tile bank
     resetTileBank(&game->bank);
     shuffleTileBank(&game->bank);
+
+    // Initializes the player's turn
+    game->currentPlayer = 0;
 }
 
 // Initializes the player's informations

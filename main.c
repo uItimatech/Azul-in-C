@@ -43,8 +43,8 @@ int main(){
 
     // Updates the console width
     if (GetConsoleScreenBufferInfo(console, &csbi)) {
-        gameWin.consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-        gameWin.consoleHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        gameWin.consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 2;
+        gameWin.consoleHeight = csbi.srWindow.Bottom - csbi.srWindow.Top;
         //gameWin.consoleWidth = GetSystemMetrics(SM_CXSCREEN)/gameWin.termCharWidth*0.87;
         //gameWin.consoleHeight = GetSystemMetrics(SM_CYSCREEN)/gameWin.termCharHeight*0.87;
     }
@@ -54,13 +54,16 @@ int main(){
     int MBDy = gameWin.menuVerticalOffset+41;
 
     // Menu buttons
-    menuButtons[0] = createButton(MBDx-strlen(menuButtonLabels[0])/2, MBDy,   strlen(menuButtonLabels[0])+1, 3, menuButtonLabels[0]);
-    menuButtons[1] = createButton(MBDx-strlen(menuButtonLabels[1])/2, MBDy+4, strlen(menuButtonLabels[1])+1, 3, menuButtonLabels[1]);
-    menuButtons[2] = createButton(MBDx-strlen(menuButtonLabels[2])/2, MBDy+8, strlen(menuButtonLabels[2])+1, 3, menuButtonLabels[2]);
+    menuButtons[0] = createButton(MBDx-strlen(menuButtonLabels[0])/2, MBDy,   strlen(menuButtonLabels[0])+3, 3, menuButtonLabels[0]);
+    menuButtons[1] = createButton(MBDx-strlen(menuButtonLabels[1])/2, MBDy+4, strlen(menuButtonLabels[1])+3, 3, menuButtonLabels[1]);
+    menuButtons[2] = createButton(MBDx-strlen(menuButtonLabels[2])/2, MBDy+8, strlen(menuButtonLabels[2])+3, 3, menuButtonLabels[2]);
 
     // Initializes the game
     GameStruct game;
     initGame(&game);
+
+
+    gameWin.boardState = 3; // TESTING ONLY
 
 
 
@@ -76,16 +79,16 @@ int main(){
             consoleColor(15, 0);
 
             // Fills the first line with "X"
-            for (int i = 0; i < gameWin.consoleWidth; i++) {
+            for (int i = 0; i < gameWin.consoleWidth-1; i++) {
                 consolePointer(i, 0);
                 printf("X");
             }
 
             consolePointer(0, 20);
-            printf("Console size: %ld, %ld\n", gameWin.consoleWidth, gameWin.consoleHeight);
-            printf("Console position: %1f, %1f\n", gameWin.leftMargin, gameWin.topMargin);
-            printf("Mouse position: %1ld, %1ld\n", getTMousePos().x, getTMousePos().y);
-            printf("Mouse board position: %ld, %ld", getMouseBoardTilePos().x, getMouseBoardTilePos().y);
+            printf("Console size: %d, %d        \n", gameWin.consoleWidth, gameWin.consoleHeight);
+            printf("Console position: %1f, %1f      \n", gameWin.leftMargin, gameWin.topMargin);
+            printf("Mouse position: %1ld, %1ld      \n", getTMousePos().x, getTMousePos().y);
+            printf("Mouse board position: %ld, %ld      ", getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y);
 
             //consolePointer(getTMousePos().x, getTMousePos().y);
             //printf("X");
@@ -129,10 +132,10 @@ int main(){
                 clearConsole(); 
                 gameWin.DISPLAY_STATE = 1;
                 printFactories(game.tileFactories);
-                printPlayerInterface(game.players[0]);
+                printPlayerInterface(game);
             }
 
-            highlightTile(getMouseBoardTilePos().x, getMouseBoardTilePos().y);
+            highlightTile(getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y, gameWin.boardState);
         }
 
         if (gameWin.END_MENU) {

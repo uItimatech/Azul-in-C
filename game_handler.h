@@ -49,6 +49,7 @@ struct GameStruct {
     PlayerStruct         players[PLAYER_COUNT];
     TileFactoryStruct    tileFactories[FACTORY_COUNT];
     TileBankStruct       bank;
+    int                  currentPlayer;
 };
 
 typedef struct GameStruct GameStruct;

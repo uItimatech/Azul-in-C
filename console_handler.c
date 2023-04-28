@@ -219,7 +219,7 @@ GAMEWINDOW createGameWindow() {
 
     GAMEWINDOW GW;
 
-    GW.DEBUG_MODE   = 0; // Displays additional information in the console
+    GW.DEBUG_MODE   = 1; // Displays additional information in the console
     GW.MAIN_MENU    = 1; // Could use a simple menu ID but this is better for undestanding
     GW.IN_GAME      = 0;
     GW.END_MENU     = 0;
@@ -298,16 +298,17 @@ void printTile(int tile, int x, int y) {
     consoleColor(15, 0); // Resets the color
 }
 
-void printBackground() {
-    int x = gameWin.consoleWidth/2 - 89/2 + 1;
+void printBackground(int x, int y, int width, int height) {
+    // OLD FIXED COORDINATES
+    /*int x = gameWin.consoleWidth/2 - 89/2 + 1;
     int y = gameWin.boardVerticalOffset + 1;
     int boardSizeX = 86;
-    int boardSizeY = 21;
+    int boardSizeY = 21;*/
 
     // Prints the background using consolePointer
     consolePointer(x, y);
-    for (int i = 0; i < boardSizeY; i++) {
-        for (int j = 0; j < boardSizeX; j++) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             consolePointer(x+j, y+i);
             consoleColor(gameWin.backgroundColor, gameWin.backgroundColor);
             printf("%c", 219);
@@ -383,10 +384,12 @@ void printSideBoard(int board[5][5]) {
     }
 }
 
-// Prints a given player's interface (board, side board, score, id)
-void printPlayerInterface(PlayerStruct player){
+// Prints the current player's interface (board, side board, score, id)
+void printPlayerInterface(GameStruct game){
 
-    printBackground();
+    PlayerStruct player = game.players[game.currentPlayer];
+
+    printBackground(gameWin.consoleWidth/2-43, gameWin.boardVerticalOffset+1, 86, 21);
     printGameBoard(player.boardMatrix);
     printSideBoard(player.sideBoardMatrix);
 
@@ -395,27 +398,42 @@ void printPlayerInterface(PlayerStruct player){
     consolePointer(gameWin.consoleWidth/2 - 43, gameWin.boardVerticalOffset-1);
     printf("Score: %d", player.score);
     consolePointer(gameWin.consoleWidth/2 - 43, gameWin.boardVerticalOffset-3);
-    printf("Player #%d", 0);
+    printf("Player #%d", game.currentPlayer+1);
 }
 
-// Prints the factories
+// Prints the given factory at the given coordinates
+void printFactory(TileFactoryStruct factory, int x, int y){
+    // Each factory has 4 tiles that are printed in a 2x2 matrix
+    // Each tile is 7 characters wide and 3 characters tall
+    // Tiles are spaced 1 character apart
+
+    // Prints the background
+    printBackground(x, y, 17, 9);
+
+    // Prints the factory
+    for (int i = 0; i < 2; i++) {
+        consolePointer(x, y+i*4);
+        for (int j = 0; j < 2; j++) {
+            printTile(factory.tiles[i+j], x+1+j*8, y+1+i*4);
+        }
+    }
+}
+
+// Prints all factories
 void printFactories(TileFactoryStruct factories[9]) {
-    int x = gameWin.consoleWidth/2 - 45;
+    // Prints 5 factories on 2 lines of tiles and 4 on the bottom
+    // Each factory is 17 characters wide and 9 characters tall
+    // Factories are spaced 1 character apart
+
+    int x = gameWin.consoleWidth/2 - 44;
     int y = 2;
 
-    // Prints 5 factories on 2 lines of tiles and 4 on the bottom
-    // Each factory has 4 tiles that are printed in a 2x2 matrix
-    // Each tile is 8 characters wide and 4 characters tall
-    for (int i = 0; i < 9; i++) {
-        consolePointer(x, y);
-        for (int j = 0; j < 4; j++) {
-            printTile(factories[i].tiles[j], x+3+j*8, y);
-        }
-        x += 40;
-        if (i == 4) {
-            x = gameWin.consoleWidth/2 - 45;
-            y += 5;
-        }
+    // Prints the factories
+    for (int i = 0; i < 5; i++) {
+        printFactory(factories[i], x+i*18, y);
+    }
+    for (int i = 0; i < 4; i++) {
+        printFactory(factories[i+5], x+i*18+8, y+10);
     }
 }
 
@@ -446,7 +464,10 @@ void printEndMenu(){
 
 // Higlights the given tile while removing previous highlights
 // Higlighting consists of printing a white 7x7 frame arround the given tile
-void highlightTile(int x, int y){
+void highlightTile(int x, int y, int boardState){
+
+    // If the tile is in the main board, adds 5 to the x coordinate
+    if (boardState==2) x += 5;
 
     consolePointer(gameWin.consoleWidth, gameWin.consoleHeight);
 
@@ -468,7 +489,8 @@ void highlightTile(int x, int y){
     consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement, prevY*4 + yDisplacement - 3);
     consoleColor(gameWin.backgroundColor, gameWin.backgroundColor);
 
-    if ((prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
+    // Removes highlight for board tiles
+    if ((boardState == 1 || boardState == 2) && (prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
                 consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
@@ -480,12 +502,18 @@ void highlightTile(int x, int y){
                 if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && prevX<6) printf("%c", 219);
             }
         }
+
+    // Highlights factory tiles
+    } else if (boardState == 0 && prevX != -1 && prevY != -1) {
+        // ADD CODE HERE
     }
 
+    // Updates the currently highlighted tile id
     gameWin.highlightedTile[0] = x;
     gameWin.highlightedTile[1] = y;
 
-    if ((x != -1 && y != -1) && (x != 11 && y != 6)) {
+    // Highlights main board tiles
+    if ((boardState == 1 || boardState == 2) && (x != -1 && y != -1) && (x != 11 && y != 6)) {
 
         displacement = 0;
 
@@ -506,6 +534,10 @@ void highlightTile(int x, int y){
                 if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && x<6) printf("%c", 219);
             }
         }
+
+    // Highlights factory tiles
+    } else if (boardState == 0 && prevX != -1 && prevY != -1) {
+        // ADD CODE HERE
 
     } else {
         return;

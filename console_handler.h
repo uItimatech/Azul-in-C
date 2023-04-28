@@ -55,6 +55,9 @@ struct GAMEWINDOW{
     double leftMargin;
     double topMargin;
 
+    int tileState; // 0: tile not picked, 1: tile picked, 2: tile placed
+    int boardState; // 0: no inputs, 1: side board inputs, 2: main board inputs, 3: factory inputs
+
 };
 
 typedef struct GAMEWINDOW GAMEWINDOW;
@@ -111,7 +114,7 @@ void printCredits(int y);
 void printTitle(int tile, int x, int y);
 
 // Prints a background for the game board
-void printBackground();
+void printBackground(int x, int y, int width, int height);
 
 // Prints the main 5x5 board for the given player
 void printGameBoard(int board[5][5]);
@@ -119,9 +122,13 @@ void printGameBoard(int board[5][5]);
 // Prints the side board for the given player
 void printSideBoard(int board[5][5]);
 
-// Prints a given player's interface (board, side board, score, id)
-void printPlayerInterface(PlayerStruct player);
+// Prints the current player's interface (board, side board, score, id)
+void printPlayerInterface(GameStruct game);
 
+// Prints the given factory at the given coordinates
+void printFactory(TileFactoryStruct factory, int x, int y);
+
+// Prints all factories
 void printFactories(TileFactoryStruct factories[9]);
 
 // Prints the menu
@@ -131,7 +138,7 @@ void printMenu();
 void printEndMenu();
 
 // Higlights the given tile while removing previous highlights
-void highlightTile(int x, int y);
+void highlightTile(int x, int y, int tileState);
 
 // Highlights the given button
 void highlightButton(BUTTON button);
