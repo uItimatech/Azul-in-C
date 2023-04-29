@@ -30,6 +30,9 @@ int pickTileFromBank(TileBankStruct* bank);
 // Moves all tiles from a specific color in a factory in the given row and removes them
 void moveTilesFromFactory(GameStruct* game, int factory, int tile, int row);
 
+// Moves all tiles from a specific color in the center bank
+void moveTilesFromCenterBank(GameStruct* game, int tile, int row);
+
 // Moves a tile row from side board to main board
 void moveRowToMain(GameStruct* game, int color, int row, const int board[5][5]);
 
@@ -44,6 +47,9 @@ int isValidMainBoardMove(GameStruct* game, int tile, int row, int col);
 
 // Tests if all factories are empty
 int areFactoriesEmpty(GameStruct* game);
+
+// Returns the amount of tiles of a specific color in the center bank
+int getCenterBankTileCount(TileBankStruct centerBank, int color);
 
 
 

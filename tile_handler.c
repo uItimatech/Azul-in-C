@@ -20,6 +20,7 @@ void resetTileBank(TileBankStruct* tileBank)
     tileBank->nbTilesRemaining = BANK_TILE_COUNT;
 }
 
+
 // Resets the center bank to 0 tiles
 void resetCenterBank(TileBankStruct* centerBank)
 {
@@ -29,12 +30,14 @@ void resetCenterBank(TileBankStruct* centerBank)
     centerBank->nbTilesRemaining = 0;
 }
 
+
 // Refills all factories with tile from the tile bank
 void refillFactory(TileFactoryStruct* tileFactory, TileBankStruct* bank) {
     for (int j = 0; j < FACTORY_TILE_COUNT; j++) {
         tileFactory->tiles[j] = pickTileFromBank(bank);
     }
 }
+
 
 // Shuffles the tile bank (swap elements randomly)
 void shuffleTileBank(TileBankStruct* bank) {
@@ -45,6 +48,7 @@ void shuffleTileBank(TileBankStruct* bank) {
         bank->tiles[j] = temp;
     }
 }
+
 
 // Picks the last tile from the tile bank
 // returns the tile color
@@ -59,20 +63,50 @@ int pickTileFromBank(TileBankStruct* bank) {
     return tile;
 }
 
+
 // Moves all tiles from a specific color in a specific factory
 void moveTilesFromFactory(GameStruct* game, int factory, int tile, int row) {
+
+    if (factory == 9) {
+        moveTilesFromCenterBank(game, tile, row);
+        return;
+    }
+
     int color = game->tileFactories[factory].tiles[tile];
 
     for (int i = 0; i < FACTORY_TILE_COUNT; i++) {
         if (game->tileFactories[factory].tiles[i] == color) {
-            game->tileFactories[factory].tiles[i] = 0;
             placeTileInSideBoard(&game->players[game->currentPlayer], color, row);
         } else {
             game->centerBank.tiles[game->centerBank.nbTilesRemaining] = game->tileFactories[factory].tiles[i];
             game->centerBank.nbTilesRemaining++;
         }
+        game->tileFactories[factory].tiles[i] = 0;
     }
 }
+
+
+// Moves all tiles from a specific color in the center bank
+void moveTilesFromCenterBank(GameStruct* game, int tile, int row) {
+
+    // Moves all tiles of the given color
+    for (int i = 0; i < game->centerBank.nbTilesRemaining; i++) {
+        game->centerBank.tiles[i] = 0;
+        game->centerBank.nbTilesRemaining--;
+        placeTileInSideBoard(&game->players[game->currentPlayer], tile, row);
+    }
+
+    // Offsets the remaining tiles to the left when there are empty spaces
+    for (int i = 0; i < game->centerBank.nbTilesRemaining; i++) {
+        if (game->centerBank.tiles[i] == 0) {
+            for (int j = i; j < game->centerBank.nbTilesRemaining; j++) {
+                game->centerBank.tiles[j] = game->centerBank.tiles[j + 1];
+            }
+            i--;
+        }
+    }
+}
+
 
 // Moves a tile row from side board to main board
 void moveRowToMain(GameStruct* game, int color, int row, const int board[5][5]){
@@ -86,33 +120,39 @@ void moveRowToMain(GameStruct* game, int color, int row, const int board[5][5]){
     game->players[game->currentPlayer].boardMatrix[row][col] = color;
 }
 
+
 // Places a tile at the end of the side board, if the row is full, the tile is placed in the overflow
 void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row) {
 
     // Detects how many tiles of this color are already in the row
     int tilesInRow = 0;
 
-    while (player->sideBoardMatrix[row][tilesInRow] == tileColor && tilesInRow<5) tilesInRow++;
+    while (player->sideBoardMatrix[row][4-tilesInRow] == tileColor && tilesInRow<5) tilesInRow++;
 
     // Places the tile in the row
     if (tilesInRow < 5) {
-        player->boardMatrix[4-row][tilesInRow] = tileColor;
+        player->boardMatrix[row][4-tilesInRow] = tileColor;
         tilesInRow++;
     } else {
         player->overflowTiles++;
     }
 }
 
+
 // Tests if the selected tile row has the correct color or is empty
 int isValidSideBoardMove(GameStruct* game, int factory, int tile, int row) {
 
     int firstRowTile = game->players[game->currentPlayer].sideBoardMatrix[row][4];
 
-    if (firstRowTile == 0 || firstRowTile == game->tileFactories[factory].tiles[tile]) {
+    if (factory==9 && (firstRowTile == 0 || firstRowTile == game->centerBank.tiles[tile])) {
+        return 1;
+    } else if (firstRowTile == 0 || firstRowTile == game->tileFactories[factory].tiles[tile]) {
         return 1;
     }
+
     return 0;
 }
+
 
 // Tests if the selected tile is a valid move
 // A valid moves means an empty tile and a correct id in the emptyBoardMatrix
@@ -124,6 +164,8 @@ int isValidMainBoardMove(GameStruct* game, int tile, int row, int col) {
     return 0;
 }
 
+
+// Tests if all factories are empty
 int areFactoriesEmpty(GameStruct* game) {
     for (int i = 0; i < FACTORY_COUNT; i++) {
         for (int j = 0; j < FACTORY_TILE_COUNT; j++) {
@@ -133,4 +175,17 @@ int areFactoriesEmpty(GameStruct* game) {
         }
     }
     return 1;
+}
+
+
+// Returns the amount of tiles of a specific color in the center bank
+int getCenterBankTileCount(TileBankStruct centerBank, int color){
+    int count = 0;
+
+    for (int i=0 ; i<centerBank.nbTilesRemaining ; i++){
+        if (centerBank.tiles[i] == color)
+            count++;
+    }
+
+    return count;
 }

@@ -25,12 +25,14 @@
     return size;
 }*/
 
+
 // Returns raw mouse coordinates as a POINT struct
 POINT getMousePos() {
     POINT mousePos;
     GetCursorPos(&mousePos);
     return mousePos;
 }
+
 
 // Returns mouse coordinates on the terminal as a POINT struct
 POINT getTMousePos() {
@@ -46,6 +48,7 @@ POINT getTMousePos() {
 
     return tMousePos;
 }
+
 
 // Returns mouse coordinates on the game boards as a POINT struct
 // Returns board coordinates of the tiles or (-1, -1) if the mouse is outside the boards
@@ -77,15 +80,20 @@ POINT getMouseBoardTilePos(int boardState) {
         boardMousePos.x = (tMousePos.x - boardHorizontalOffset - gameWin.leftMargin   )/8   -5;
         boardMousePos.y = (tMousePos.y - boardVerticalOffset   - gameWin.topMargin  -1)/4   +1;
 
-    // Check if the mouse if in the first factory line:
+    // Check if the mouse is in the first factory line:
     } else if (boardState == 3 && tMousePos.x >= factoriesHorizontalOffset+1 && tMousePos.x <= factoriesHorizontalOffset+17*5+4 && tMousePos.y >= factoriesVerticalOffset+1 && tMousePos.y <= factoriesVerticalOffset+7) {
         boardMousePos.x = (tMousePos.x - factoriesHorizontalOffset - gameWin.leftMargin -1)/18;
         boardMousePos.y = (tMousePos.x - boardMousePos.x*18 - factoriesHorizontalOffset - gameWin.leftMargin  -1)/9 + round((tMousePos.y - factoriesVerticalOffset - gameWin.topMargin -2)/4)*2;
 
-    // Check if the mouse if in the second factory line:
+    // Check if the mouse is in the second factory line:
     } else if (boardState == 3 && tMousePos.x >= factoriesHorizontalOffset+9 && tMousePos.x <= factoriesHorizontalOffset+17*4+11 && tMousePos.y >= factoriesVerticalOffset+11 && tMousePos.y <= factoriesVerticalOffset+17) {
         boardMousePos.x = (tMousePos.x - factoriesHorizontalOffset - gameWin.leftMargin -9)/18 +5;
         boardMousePos.y = (tMousePos.x - (boardMousePos.x-5)*18 - factoriesHorizontalOffset - gameWin.leftMargin  -9)/9 + round((tMousePos.y - factoriesVerticalOffset - gameWin.topMargin - 12)/4)*2;
+    
+    // Check if the mouse is in the center bank:
+    } else if (boardState == 3 && tMousePos.x >= gameWin.consoleWidth/2-57 && tMousePos.x <= gameWin.consoleWidth/2-49 && tMousePos.y >= gameWin.boardVerticalOffset+1 && tMousePos.y <= gameWin.boardVerticalOffset+5*4) {
+        boardMousePos.x = 9;
+        boardMousePos.y = (tMousePos.y - gameWin.boardVerticalOffset - gameWin.topMargin - 1)/4+1;
     } else {
         boardMousePos.x = -1;
         boardMousePos.y = -1;
@@ -93,6 +101,7 @@ POINT getMouseBoardTilePos(int boardState) {
 
     return boardMousePos;
 }
+
 
 // Returns 1 if the mouse is in the specified rectangle, 0 otherwises
 int isMouseInRect(int x, int y, int width, int height){
@@ -104,6 +113,7 @@ int isMouseInRect(int x, int y, int width, int height){
         return 0;
     }
 }
+
 
 // Returns the state of the left mouse button (CURRENTLY UNUSED)
 int mousePressed() {

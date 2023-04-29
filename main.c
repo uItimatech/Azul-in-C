@@ -65,6 +65,8 @@ int main(){
 
 
 
+
+
     // Main loop
     while (1) {
 
@@ -129,6 +131,7 @@ int main(){
             if (!gameWin.DISPLAY_STATE) {
                 clearConsole(); 
                 gameWin.DISPLAY_STATE = 1;
+                
             }
 
             // Starts a new game round until the game is over

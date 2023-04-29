@@ -128,11 +128,20 @@ void printSideBoard(int board[5][5]);
 // Prints the current player's interface (board, side board, score, id)
 void printPlayerUI(GameStruct* game);
 
+// Prints the game hint corresponding to the current board state
+void printGameHint();
+
 // Prints the given factory at the given coordinates
 void printFactory(TileFactoryStruct factory, int x, int y);
 
 // Prints all factories
 void printFactories(TileFactoryStruct factories[9]);
+
+// Prints the center bank
+void printCenterBank(TileBankStruct bank);
+
+// Prints the whole game UI (factories, center bank, player UI)
+void printGameUI(GameStruct *game);
 
 // Prints the menu
 void printMenu();

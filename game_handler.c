@@ -75,27 +75,43 @@ void gameRound(GameStruct* game) {
     // While all factories are not empty
     while (!areFactoriesEmpty(game)){
 
-        // Refreshes the game UI
-        consoleColor(15,0);
-        clearConsole();
-        printFactories(game->tileFactories);
-        printPlayerUI(game);
+        printGameUI(game);
+
+
+
 
         // Let the player choose tiles from a factory or the center
         gameWin.boardState = 3;
+        printGameHint();
 
         // Waits for the player to choose a factory or the center
         int validFactMove = 0;
         while (mousePressed()==0 || validFactMove == 0) {
             highlightTile(getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y, gameWin.boardState);
+
+            // Checks if the player has chosen a valid factory
             validFactMove = getMouseBoardTilePos(gameWin.boardState).x!=-1 && getMouseBoardTilePos(gameWin.boardState).y!=-1;
+
+            // If the player has chosen a factory, checks if it is the center bank
+            if (validFactMove && getMouseBoardTilePos(gameWin.boardState).x == 9) {
+                validFactMove = getCenterBankTileCount(game->centerBank, getMouseBoardTilePos(gameWin.boardState).y) > 0;
+
+            // If the player has chosen a factory, checks if it is not empty
+            } else if (validFactMove) {
+                validFactMove = game->tileFactories[getMouseBoardTilePos(gameWin.boardState).x].tiles[getMouseBoardTilePos(gameWin.boardState).y] != 0;
+            }
         }
 
         int selectedFactory = getMouseBoardTilePos(gameWin.boardState).x;
         int selectedTile = getMouseBoardTilePos(gameWin.boardState).y;
+        int selectedTileColor = game->tileFactories[selectedFactory].tiles[selectedTile];
+
+
+
 
         // Let the player choose a sideboard row
         gameWin.boardState = 1;
+        printGameHint();
 
         // Waits for the player to choose a sideboard row
         int validSideMove = 0;
@@ -105,9 +121,25 @@ void gameRound(GameStruct* game) {
         }
 
         // Moves the tiles from the factory or the center to the sideboard
-        moveTilesFromFactory(game, selectedFactory, selectedTile, getMouseBoardTilePos(gameWin.boardState).x);
+        moveTilesFromFactory(game, selectedFactory, selectedTile, getMouseBoardTilePos(gameWin.boardState).y-1);
+
+        int selectedSideRow = getMouseBoardTilePos(gameWin.boardState).y-1;
 
 
+        gameWin.boardState = 4;
+        printGameUI(game);
+        printGameHint();
+
+        // DEBUG
+        consolePointer(0,0);
+        printf("Selected factory: %d\n", selectedFactory);
+        printf("Selected tile: %d\n", selectedTile);
+        printf("selected tile color: %d\n", selectedTileColor);
+        printf("Selected sideboard row: %d\n", selectedSideRow);
+
+        // Waits for mouse click to switch to the next player
+        while (mousePressed()!=0);
+        while (mousePressed()==0);
 
 
 
@@ -116,6 +148,7 @@ void gameRound(GameStruct* game) {
         game->currentPlayer = (game->currentPlayer + 1) % (PLAYER_COUNT);
     }
 }
+
 
 // Tests if the game is over (one player has a full row)
 int isGameOver(GameStruct game) {
@@ -145,7 +178,6 @@ int isGameOver(GameStruct game) {
 
 
 // Calculates the negative points for the player based on the number of overflowing tiles
-// (1-2: -1, 3-5: -2, 5-infinity: -3)
 int negativePoints(int overflowingTiles) {
     int points = 0;
 

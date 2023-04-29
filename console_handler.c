@@ -5,6 +5,7 @@
 #include "console_handler.h"
 #include "game_handler.h"
 #include "input_handler.h"
+#include "tile_handler.h"
 
 
 // THIS IS WHERE THE BOARD IS RENDERED
@@ -164,9 +165,11 @@ const char *menuButtonLabels[4] = {
 
 // Stores the hints
 const char *gameHints[5] = {
-    "Select a tile color in one of the factories or the center",
+    "",
     "Select a row to place the tile(s) in",
-    ""
+    "Select a board tile", // Currently not used but still available
+    "Select a tile color in one of the factories or the side of the table", //NB: the 'table side' is actually the 'center bank' in the physical game
+    "Click to continue..."
 };
 
 BUTTON menuButtons[4];
@@ -200,6 +203,7 @@ void clearConsole() {
     #endif
 }
 
+
 // Places the console pointer at the given coordinates
 void consolePointer(int x, int y) {
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -209,12 +213,14 @@ void consolePointer(int x, int y) {
     SetConsoleCursorPosition(hStdout, pos);
 }
 
+
 // Changes the console text and background colors
 void consoleColor (int textColor, int backColor)
 {
     HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(H, backColor*16+textColor);
 }
+
 
 // Creates a button
 BUTTON createButton(int x, int y, int width, int height, const char *label) {
@@ -227,12 +233,13 @@ BUTTON createButton(int x, int y, int width, int height, const char *label) {
     return button;
 }
 
+
 // Creates a game window
 GAMEWINDOW createGameWindow() {
 
     GAMEWINDOW GW;
 
-    GW.DEBUG_MODE   = 0; // Displays additional information in the console
+    GW.DEBUG_MODE   = 1; // Displays additional information in the console
     GW.MAIN_MENU    = 1; // Could use a simple menu ID but this is better for undestanding
     GW.IN_GAME      = 0;
     GW.END_MENU     = 0;
@@ -272,7 +279,6 @@ GAMEWINDOW createGameWindow() {
     return GW;
 }
 
-
 GAMEWINDOW gameWin;
 
 
@@ -301,6 +307,7 @@ void printCredits(int y) {
     printf("%s", credits[1]);
 }
 
+
 // Prints the the given tile at the given coordinates
 void printTile(int tile, int x, int y) {
     consolePointer(x, y);
@@ -314,12 +321,8 @@ void printTile(int tile, int x, int y) {
     consoleColor(15, 0); // Resets the color
 }
 
+
 void printBackground(int x, int y, int width, int height) {
-    // OLD FIXED COORDINATES
-    /*int x = gameWin.consoleWidth/2 - 89/2 + 1;
-    int y = gameWin.boardVerticalOffset + 1;
-    int boardSizeX = 86;
-    int boardSizeY = 21;*/
 
     // Prints the background using consolePointer
     consolePointer(x, y);
@@ -333,17 +336,11 @@ void printBackground(int x, int y, int width, int height) {
     consoleColor(15, 0); // Resets the color
 }
 
+
 // Prints the main 5x5 board for the given player
 void printGameBoard(int board[5][5]) {
     int x = gameWin.consoleWidth/2;
     int y = gameWin.boardVerticalOffset;
-
-    // Prints the column numbers
-    /*consoleColor(15, backgroundColor);
-    consolePointer(x+6, y);
-    printf("1       2       3       4       5");
-    consolePointer(x+6, y+1);
-    printf("v       v       v       v       v");*/
 
     // Prints the board
     consolePointer(x, y+2);
@@ -366,6 +363,7 @@ void printGameBoard(int board[5][5]) {
     }
 }
 
+
 // Prints the side board for the given player
 void printSideBoard(int board[5][5]) {
     int x = gameWin.consoleWidth/2 - 45;
@@ -374,13 +372,6 @@ void printSideBoard(int board[5][5]) {
     // Prints the side board
     consolePointer(x, y+2);
     for (int i = 0; i < 5; i++) {
-
-        // Prints the row numbers
-        /*consoleColor(15, backgroundColor);
-        consolePointer(x, y+3+i*4);
-        printf("%d", i+1);
-        consolePointer(x+1, y+3+i*4);
-        printf(">");*/
 
         for (int j = 0; j < 5; j++) {
             //printTile(board[i][j], x+3+j*8, y+2+i*3);
@@ -400,8 +391,9 @@ void printSideBoard(int board[5][5]) {
     }
 }
 
+
 // Prints the current player's interface (board, side board, score, id)
-void printPlayerUI(GameStruct *game){
+void printPlayerUI(GameStruct *game) {
 
     PlayerStruct player = game->players[game->currentPlayer];
 
@@ -417,11 +409,34 @@ void printPlayerUI(GameStruct *game){
     printf("Player #%d", game->currentPlayer+1);
 }
 
+
+// Prints the game hint corresponding to the current board state
+void printGameHint() {
+    int x = gameWin.consoleWidth/2 - 43;
+    int y = gameWin.boardVerticalOffset + 23;
+
+    consoleColor(8, 0);
+
+    // Clears the line
+    consolePointer(x, y);
+    for (int i = 0; i < 100; i++) {
+        printf(" ");
+    }
+
+    // Prints the hint message
+    consolePointer(x, y);
+    printf("Hint: %s", gameHints[gameWin.boardState]);
+
+}
+
+
 // Prints the given factory at the given coordinates
-void printFactory(TileFactoryStruct factory, int x, int y){
+void printFactory(TileFactoryStruct factory, int x, int y) {
     // Each factory has 4 tiles that are printed in a 2x2 matrix
     // Each tile is 7 characters wide and 3 characters tall
     // Tiles are spaced 1 character apart
+
+    // The background should start in the top left corner of the board
 
     // Prints the background
     printBackground(x, y, 17, 9);
@@ -430,16 +445,14 @@ void printFactory(TileFactoryStruct factory, int x, int y){
     for (int i = 0; i < 2; i++) {
         consolePointer(x, y+i*4);
         for (int j = 0; j < 2; j++) {
-            printTile(factory.tiles[i+j], x+1+j*8, y+1+i*4);
+            printTile(factory.tiles[2*i+j] , x+1+j*8, y+1+i*4);
         }
     }
 }
 
+
 // Prints all factories
 void printFactories(TileFactoryStruct factories[9]) {
-    // Prints 5 factories on 2 lines of tiles and 4 on the bottom
-    // Each factory is 17 characters wide and 9 characters tall
-    // Factories are spaced 1 character apart
 
     int x = gameWin.consoleWidth/2 - 44;
     int y = 2;
@@ -453,8 +466,39 @@ void printFactories(TileFactoryStruct factories[9]) {
     }
 }
 
+
+// Prints the center bank
+void printCenterBank(TileBankStruct bank) {
+
+    int x = gameWin.consoleWidth/2-57;
+    int y = gameWin.boardVerticalOffset+1;
+
+    // Prints the background
+    printBackground(x-4, y, 13, 21);
+
+    // Prints the bank
+    for (int i = 0; i < 5; i++) {
+        consoleColor(15, gameWin.backgroundColor);
+        consolePointer(x-3, y+i*4+2);
+        printf("%d x", getCenterBankTileCount(bank, i+1));
+        printTile(i+1, x+1, y+1+i*4);
+    }
+}
+
+
+// Prints the whole game UI
+void printGameUI(GameStruct *game) {
+    // Refreshes the game UI
+    consoleColor(15,0);
+    clearConsole();
+    printFactories(game->tileFactories);
+    printCenterBank(game->centerBank);
+    printPlayerUI(game);
+}
+
+
 // Prints the menu
-void printMenu(){
+void printMenu() {
 
     char hint[21] = {"[Use mouse to select]"};
 
@@ -473,10 +517,12 @@ void printMenu(){
     printf("%s", hint);
 }
 
+
 // Prints the game end menu
-void printEndMenu(){
+void printEndMenu() {
     
 }
+
 
 // Higlights the given tile while removing previous highlights
 // Higlighting consists of printing a white 7x7 frame arround the given tile
@@ -503,16 +549,6 @@ void highlightTile(int x, int y, int boardState){
 
     // Removes highlight for board tiles
     if ((gameWin.previousBoardState == 1 || gameWin.previousBoardState == 2) && (prevX != -1 && prevY != -1) && (prevX != 11 && prevY != 6)) {
-        /*for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 9; j++) {
-                consolePointer(prevX*8 + gameWin.consoleWidth/2 - 85/2 - 9 + displacement + j, prevY*4 + yDisplacement - 3 + i);
-
-                // Places the highlight on the right side of the side board
-                if (prevX<6) consolePointer(gameWin.consoleWidth/2 - 85/2 + 31 + displacement + j, prevY*4 + yDisplacement - 3 + i);
-
-                // Prints the highlight frame
-                if ((i == 0 || i == 4 || j == 0 || j == 8) && prevX>5) printf("%c", 219);
-                if (((i == 0 && j>5) || (i == 4 && j>5) || j == 8) && prevX<6) printf("%c", 219);*/
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
@@ -528,7 +564,7 @@ void highlightTile(int x, int y, int boardState){
         }
 
     // Removes highlights factory tiles
-    } else if (gameWin.previousBoardState == 3 && prevX != -1 && prevY != -1) {
+    } else if (gameWin.previousBoardState == 3 && prevX != 9 && prevX != -1 && prevY != -1) {
 
         // Highlights the current tile
         for (int i = 0; i < 5; i++) {
@@ -538,6 +574,17 @@ void highlightTile(int x, int y, int boardState){
                 if (prevX<5) consolePointer(gameWin.consoleWidth/2 +prevX*18+j     -44 +floor(prevY%2)*8, i+2  +floor(prevY/2)*4);
                 // If the tile is in the second row of the factorprevY
                 if (prevX>4) consolePointer(gameWin.consoleWidth/2 +(prevX-5)*18+j -36 +floor(prevY%2)*8, i+12 +floor(prevY/2)*4);
+
+                // Creates the highlight frame
+                if ((i == 0 || i == 4 || j == 0 || j == 8)) printf("%c", 219);
+            }
+        }
+    } else if (gameWin.previousBoardState == 3  && prevX == 9 && prevY != -1) {
+            
+        // Highlights the current tile
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+                consolePointer(gameWin.consoleWidth/2 - 57 + j, gameWin.boardVerticalOffset + i+prevY*4 -3);
 
                 // Creates the highlight frame
                 if ((i == 0 || i == 4 || j == 0 || j == 8)) printf("%c", 219);
@@ -579,7 +626,7 @@ void highlightTile(int x, int y, int boardState){
         }
 
     // Highlights factory tiles
-    } else if (boardState == 3  && (x != -1 && y != -1)) {
+    } else if (boardState == 3  && (x != 9 &&x != -1 && y != -1)) {
 
         // Highlights the current tile
         for (int i = 0; i < 5; i++) {
@@ -594,11 +641,25 @@ void highlightTile(int x, int y, int boardState){
                 if ((i == 0 || i == 4 || j == 0 || j == 8)) printf("%c", 219);
             }
         }
+
+    // Highlights center bank tiles
+    } else if (boardState == 3  && x == 9 && y != -1) {
+            
+        // Highlights the current tile
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+                consolePointer(gameWin.consoleWidth/2 - 57 + j, gameWin.boardVerticalOffset + i+y*4 -3);
+
+                // Creates the highlight frame
+                if ((i == 0 || i == 4 || j == 0 || j == 8)) printf("%c", 219);
+            }
+        }
     }
 
     consolePointer(0,0);
     consoleColor(15,0);
 }
+
 
 // Highlights the given button if the mouse is over it
 void highlightButton(BUTTON button) {
@@ -629,6 +690,7 @@ void highlightButton(BUTTON button) {
         printf("  %s  ", (const char*)button.label);
     }
 }
+
 
 // If mouse is pressed while the mouse is over the button, returns 1
 int isButtonPressed(BUTTON button) {
