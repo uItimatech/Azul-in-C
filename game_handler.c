@@ -104,7 +104,8 @@ void gameRound(GameStruct* game) {
 
         int selectedFactory = getMouseBoardTilePos(gameWin.boardState).x;
         int selectedTile = getMouseBoardTilePos(gameWin.boardState).y;
-        int selectedTileColor = game->tileFactories[selectedFactory].tiles[selectedTile];
+        int selectedTileColor = game->tileFactories[selectedFactory].tiles[selectedTile]; // Only used for debug
+
 
 
 
@@ -113,29 +114,36 @@ void gameRound(GameStruct* game) {
         gameWin.boardState = 1;
         printGameHint();
 
-        // Waits for the player to choose a sideboard row
+        // Waits for the player to choose a valid sideboard row
         int validSideMove = 0;
         while (mousePressed()==0 || validSideMove == 0) {
             highlightTile(getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y, gameWin.boardState);
-            validSideMove = getMouseBoardTilePos(gameWin.boardState).x!=-1 && getMouseBoardTilePos(gameWin.boardState).y!=-1 && isValidSideBoardMove(game, selectedFactory, selectedTile, getMouseBoardTilePos(gameWin.boardState).x);
+
+            // Checks if the player has chosen a valid sideboard row
+            validSideMove = getMouseBoardTilePos(gameWin.boardState).x!=-1 && getMouseBoardTilePos(gameWin.boardState).y!=-1 && isValidSideBoardMove(game, selectedFactory, selectedTile, getMouseBoardTilePos(gameWin.boardState).y-1);
         }
 
         // Moves the tiles from the factory or the center to the sideboard
         moveTilesFromFactory(game, selectedFactory, selectedTile, getMouseBoardTilePos(gameWin.boardState).y-1);
 
-        int selectedSideRow = getMouseBoardTilePos(gameWin.boardState).y-1;
-
+        int selectedSideRow = getMouseBoardTilePos(gameWin.boardState).y-1; // Only used for debug
 
         gameWin.boardState = 4;
         printGameUI(game);
         printGameHint();
 
         // DEBUG
-        consolePointer(0,0);
-        printf("Selected factory: %d\n", selectedFactory);
-        printf("Selected tile: %d\n", selectedTile);
-        printf("selected tile color: %d\n", selectedTileColor);
-        printf("Selected sideboard row: %d\n", selectedSideRow);
+        if (gameWin.DEBUG_MODE) {
+            consolePointer(0,0);
+            printf("Selected factory: %d\n", selectedFactory);
+            printf("Selected tile: %d\n", selectedTile);
+            printf("selected tile color: %d\n", selectedTileColor);
+            printf("Selected sideboard row: %d\n", selectedSideRow);
+        }
+
+
+
+
 
         // Waits for mouse click to switch to the next player
         while (mousePressed()!=0);

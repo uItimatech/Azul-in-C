@@ -385,7 +385,7 @@ void printSideBoard(int board[5][5]) {
                 }
             }
             else {
-                printTile(board[i][j], x+3+j*8, y+2+i*3);
+                printTile(board[i][j], x+3+j*8, y+2+i*4);
             }
         }
     }

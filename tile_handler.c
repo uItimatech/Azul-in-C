@@ -127,7 +127,7 @@ void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row) {
     // Detects how many tiles of this color are already in the row
     int tilesInRow = 0;
 
-    while (player->sideBoardMatrix[row][4-tilesInRow] == tileColor && tilesInRow<5) tilesInRow++;
+    /*while (player->sideBoardMatrix[row][4-tilesInRow] == tileColor && tilesInRow<5) tilesInRow++;
 
     // Places the tile in the row
     if (tilesInRow < 5) {
@@ -135,18 +135,33 @@ void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row) {
         tilesInRow++;
     } else {
         player->overflowTiles++;
+    }*/
+
+    // Calculates the number of tiles in the row
+    for (int i = 0; i < 5; i++) {
+        if (player->sideBoardMatrix[row][i] == tileColor) {
+            tilesInRow++;
+        }
+    }
+
+    // If the row is full, the tile is placed in the overflow
+    if (tilesInRow == row+1) {
+        player->overflowTiles++;
+    } else {
+        // Places the tile at the end of the row (to the left)
+        player->sideBoardMatrix[row][4-tilesInRow] = tileColor;
     }
 }
 
 
-// Tests if the selected tile row has the correct color or is empty
+// Tests if the selected tile row has the correct color, is not full or is empty
 int isValidSideBoardMove(GameStruct* game, int factory, int tile, int row) {
 
     int firstRowTile = game->players[game->currentPlayer].sideBoardMatrix[row][4];
 
-    if (factory==9 && (firstRowTile == 0 || firstRowTile == game->centerBank.tiles[tile])) {
+    if (factory==9 && (firstRowTile == 0 || firstRowTile == game->centerBank.tiles[tile]) && (game->players[game->currentPlayer].sideBoardMatrix[row][4-row] == 0)) {
         return 1;
-    } else if (firstRowTile == 0 || firstRowTile == game->tileFactories[factory].tiles[tile]) {
+    } else if ((firstRowTile == 0 || firstRowTile == game->tileFactories[factory].tiles[tile]) && (game->players[game->currentPlayer].sideBoardMatrix[row][4-row] == 0)) {
         return 1;
     }
 
