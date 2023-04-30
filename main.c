@@ -60,7 +60,7 @@ int main(){
 
     // Initializes the game
     GameStruct game;
-    
+
     initGame(&game);
 
 
@@ -70,10 +70,13 @@ int main(){
     // Main loop
     while (1) {
 
+        // Updates the console size informations
         if (GetWindowRect(GetConsoleWindow(), &windowRect)) {
             gameWin.leftMargin = round(windowRect.left);
             gameWin.topMargin = round(windowRect.top);
         }
+
+
 
         if (gameWin.DEBUG_MODE) {
             consoleColor(15, 0);
@@ -95,8 +98,11 @@ int main(){
             //printf("X");
         }
 
+
+
         if (gameWin.MAIN_MENU) {
             if (!gameWin.DISPLAY_STATE) {clearConsole(); printMenu(); gameWin.DISPLAY_STATE = 1;}
+
 
             // Play button
             if (isButtonPressed(menuButtons[0])) {
@@ -105,18 +111,21 @@ int main(){
                 gameWin.DISPLAY_STATE = 0;
             }
 
+
             // Rules button
             if (isButtonPressed(menuButtons[1])) {
                 // Opens rules.pdf in the default application if it exists
                 if (access("rules.pdf", F_OK) == 0) system("start rules.pdf"); 
             }
 
+
             // Quit button
             if (isButtonPressed(menuButtons[2])) {
                 return 0;
             }
 
-            // Highlighting
+
+            // Button highlighting
             int buttonCollided = 0;
             for (int i = 0; i < 4; i++) {
                 if (isMouseInRect(menuButtons[i].x, menuButtons[i].y, menuButtons[i].width, menuButtons[i].height)) {
@@ -127,20 +136,43 @@ int main(){
             if (!buttonCollided) highlightButton(createButton(-1, -1, -1, -1, ""));
         }
 
+
+
         if (gameWin.IN_GAME) {
             if (!gameWin.DISPLAY_STATE) {
                 clearConsole(); 
                 gameWin.DISPLAY_STATE = 1;
-                
             }
 
             // Starts a new game round until the game is over
-            while (!isGameOver(game)) gameRound(&game);
+            while (!isGameOver(game)) {
+                gameRound(&game);
+            }
+
+            // Shows the end menu
+            gameWin.END_MENU = 1;
+            gameWin.IN_GAME = 0;
+            gameWin.DISPLAY_STATE = 0;
         }
 
+
+
         if (gameWin.END_MENU) {
-            if (!gameWin.DISPLAY_STATE) {clearConsole(); printEndMenu(); gameWin.DISPLAY_STATE = 1;}}
-    
+            if (!gameWin.DISPLAY_STATE) {clearConsole(); printEndMenu(game); gameWin.DISPLAY_STATE = 1;}
+
+            // Waits for the click
+            while (!mousePressed()) {
+                // Exits if the user presses ESC
+                if (GetAsyncKeyState(VK_ESCAPE)) {
+                    return 0;
+                }
+            }
+
+            gameWin.END_MENU = 0;
+            gameWin.MAIN_MENU = 1;
+            gameWin.DISPLAY_STATE = 0;
+        }
+
         // Exits if the user presses ESC
         if (GetAsyncKeyState(VK_ESCAPE)) {
             return 0;

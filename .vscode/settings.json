@@ -18,9 +18,7 @@
   "C_Cpp_Runner.warningsAsError": false,
   "C_Cpp_Runner.compilerArgs": [
     "-Wall",
-    "-Wextra",
-    "-o",
-    "main.o"
+    "-Wextra"
   ],
   "C_Cpp_Runner.linkerArgs": [],
   "C_Cpp_Runner.includePaths": [],
@@ -40,6 +38,8 @@
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp_Runner.showCompilationTime": false,
   "files.associations": {
-    "game_handler.h": "c"
+    "game_handler.h": "c",
+    "input_handler.h": "c",
+    "math.h": "c"
   }
 }

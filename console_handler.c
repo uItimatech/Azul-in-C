@@ -42,23 +42,23 @@ const char *tileSprites[12][3] = {
     {
         "       ",
         "  Blu  ",
-        ".     ."
+        "       "
     },{
         "       ",
         "  Yel  ",
-        ".     ."
+        "       "
     },{
         "       ",
         "  Red  ",
-        ".     ."
+        "       "
     },{
         "       ",
         "  Blk  ",
-        ".     ."
+        "       "
     },{
         "       ",
         "  Tuq  ",
-        ".     ."
+        "       "
     },{
         "       ",
         "       ",
@@ -73,10 +73,10 @@ const int tileColors[12][2] = {
         8
     },{ // BLUE TILE
         1,
-        9
+        7
     },{ // YELLOW TILE
         14,
-        6
+        4
     },{ // RED TILE
         4,
         15
@@ -239,7 +239,7 @@ GAMEWINDOW createGameWindow() {
 
     GAMEWINDOW GW;
 
-    GW.DEBUG_MODE   = 1; // Displays additional information in the console
+    GW.DEBUG_MODE   = 0; // Displays additional information in the console
     GW.MAIN_MENU    = 1; // Could use a simple menu ID but this is better for undestanding
     GW.IN_GAME      = 0;
     GW.END_MENU     = 0;
@@ -358,7 +358,7 @@ void printGameBoard(int board[5][5]) {
             }
             else {
                 printTile(board[i][j], x+3+j*8, y+2+i*4);
-            }
+            }  
         }
     }
 }
@@ -425,7 +425,7 @@ void printGameHint() {
 
     // Prints the hint message
     consolePointer(x, y);
-    printf("Hint: %s", gameHints[gameWin.boardState]);
+    printf("[%s]", gameHints[gameWin.boardState]);
 
 }
 
@@ -500,7 +500,7 @@ void printGameUI(GameStruct *game) {
 // Prints the menu
 void printMenu() {
 
-    char hint[21] = {"[Use mouse to select]"};
+    char hint[22] = {"[Use mouse to select]"};
 
     printLogo(gameWin.menuVerticalOffset);
     printCredits(gameWin.menuVerticalOffset+37);
@@ -513,15 +513,70 @@ void printMenu() {
     }
 
     consoleColor(8, 0);
-    consolePointer(gameWin.consoleWidth/2 - strlen(hint)/2 + 2, gameWin.consoleHeight-1);
+    consolePointer(gameWin.consoleWidth/2 - strlen(hint)/2 + 3, gameWin.consoleHeight-1);
     printf("%s", hint);
 }
 
 
 // Prints the game end menu
-void printEndMenu() {
+void printEndMenu(GameStruct game) {
     
-}
+    int x = gameWin.consoleWidth/2;
+    int y = gameWin.menuVerticalOffset+15;
+
+    // Prints the background
+    printBackground(x-20, y, 40, 22);
+
+    consoleColor(15, 0);
+    consolePointer(x-8, y+1);
+    printf(" ~ Game ended! ~ ");
+
+
+
+    int sortedScores[4];
+    int sortedPlayers[4];
+
+    for (int i = 0; i < 4; i++) {
+        sortedScores[i] = game.players[i].score;
+        sortedPlayers[i] = i;
+    }
+
+
+    // Sorts scores in order of points
+    for (int i = 0; i < 4; i++) {
+        for (int j = i; j < 4; j++) {
+            if (sortedScores[i] < sortedScores[j]) {
+                int temp = sortedScores[i];
+                sortedScores[i] = sortedScores[j];
+                sortedScores[j] = temp;
+
+                temp = sortedPlayers[i];
+                sortedPlayers[i] = sortedPlayers[j];
+                sortedPlayers[j] = temp;
+            }
+        }
+    }
+
+
+    // Prints the winner
+    consolePointer(x-11, y+4);
+    consoleColor(0, gameWin.backgroundColor);
+    printf("Player #%d won the game!", sortedPlayers[0]+1);
+
+
+    // Prints the scores of each player
+    for (int i = 0; i < 4; i++) {
+        consolePointer(x-8, y+7+i*3);
+        consoleColor(2*i+1, gameWin.backgroundColor);
+        printf("Player #%d: %d", sortedPlayers[i]+1, sortedScores[i]);
+    }
+
+
+    // Prints the hint message
+    consoleColor(8, 0);
+    consolePointer(x-14, y+20);
+    printf("[Click to return to the menu]");
+}   
 
 
 // Higlights the given tile while removing previous highlights
@@ -694,6 +749,9 @@ void highlightButton(BUTTON button) {
 
 // If mouse is pressed while the mouse is over the button, returns 1
 int isButtonPressed(BUTTON button) {
+
+    mousePressed(); // Clears the mouse buffer
+
     if (isMouseInRect(button.x, button.y, button.width, button.height)) {
         if (mousePressed()) {
             // wait for the space key to be released

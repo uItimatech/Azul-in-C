@@ -27,13 +27,6 @@ int isMouseInRect(int x, int y, int width, int height);
 // Returns the state of the left mouse button
 int mousePressed();
 
-// Default character size in pixels (Automatically adjusted)
-extern int termCharWidth;
-extern int termCharHeight;
-
-extern double leftMargin;
-extern double topMargin;
-
 
 
 #endif

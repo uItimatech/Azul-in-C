@@ -1,8 +1,10 @@
 #ifndef __GAME_HANDLER_H__
 #define __GAME_HANDLER_H__
 
+#include <windows.h>
 
-// THIS IS WHERE PLAYER POINTS ARE CALCULATED
+
+// THIS IS WHERE THE GAME ROUNDS ARE MANAGED AND PLAYER POINTS ARE CALCULATED 
 
 
 #define PLAYER_COUNT        4
@@ -21,6 +23,7 @@ struct PlayerStruct {
     int sideBoardMatrix[5][5];
     int overflowTiles;
     int score;
+    POINT lastTilePos;
 };
 
 typedef struct PlayerStruct PlayerStruct;
@@ -67,14 +70,21 @@ void initPlayer(PlayerStruct* player);
 // Resets the game
 void resetGame(GameStruct* game);
 
-// Calculates the negative points for the player based on the number of overflowing tiles
-int negativePoints(int overflowingTiles);
-
 // Starts a game round
 void gameRound(GameStruct* game);
 
 // Tests if the game is over (one player has a full row)
 int isGameOver(GameStruct game);
+
+
+// Update all players scores
+void updateAllScores(GameStruct *game);
+
+// Updates the player score with negative points based on the number of overflowing tiles
+void negatePoints(PlayerStruct* player);
+
+// Updates the player score based on the latest tile placement
+void updatedTileScore(PlayerStruct* player, int x, int y);
 
 
 

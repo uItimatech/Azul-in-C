@@ -1,5 +1,6 @@
 // Standard libraries
 #include <stdio.h>
+#include <math.h>
 
 #include "game_handler.h"
 #include "tile_handler.h"
@@ -7,7 +8,7 @@
 #include "input_handler.h"
 
 
-// THIS IS WHERE THE PLAYER POINTS ARE CALCULATED
+// THIS IS WHERE THE GAME ROUNDS ARE MANAGED AND PLAYER POINTS ARE CALCULATED
 
 
 const int emptyBoardMatrix[5][5] = {
@@ -65,6 +66,8 @@ void initPlayer(PlayerStruct* player)
     }
     player->score = 0;
     player->overflowTiles = 0;
+    player->lastTilePos.x = -1;
+    player->lastTilePos.y = -1;
 }
 
 // Starts a game round
@@ -73,45 +76,56 @@ void gameRound(GameStruct* game) {
     game->currentPlayer = game->priorityPlayer;
     game->priorityPlayer = -1;
 
-    // While all factories are not empty
-    while (!areFactoriesEmpty(game)){
+    int roundEndCondition = 0;
+
+    // --- DURING THE ROUND ---
+    while (!roundEndCondition) {
 
         printGameUI(game);
 
 
 
-
-        // Let the player choose tiles from a factory or the center
+        // 1) Let the player choose tiles from a factory or the center
         gameWin.boardState = 3;
         printGameHint();
 
         // Waits for the player to choose a factory or the center
-        int validFactMove = 0;
-        while (mousePressed()==0 || validFactMove == 0) {
+        int validTileMove = 0;
+        while (mousePressed()==0 || validTileMove == 0) {
             highlightTile(getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y, gameWin.boardState);
 
+
             // Checks if the player has chosen a valid factory
-            validFactMove = getMouseBoardTilePos(gameWin.boardState).x!=-1 && getMouseBoardTilePos(gameWin.boardState).y!=-1;
+            validTileMove = getMouseBoardTilePos(gameWin.boardState).x!=-1 && getMouseBoardTilePos(gameWin.boardState).y!=-1;
+
 
             // If the player has chosen a factory, checks if it is the center bank
-            if (validFactMove && getMouseBoardTilePos(gameWin.boardState).x == 9) {
-                validFactMove = getCenterBankTileCount(game->centerBank, getMouseBoardTilePos(gameWin.boardState).y) > 0;
-
+            if (validTileMove && getMouseBoardTilePos(gameWin.boardState).x == 9) {
+                // Checks if the choosen color is still available in the center bank
+                validTileMove = (getCenterBankTileCount(game->centerBank, getMouseBoardTilePos(gameWin.boardState).y) > 0)  &&  (isThereValidMove(game, getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y));
             // If the player has chosen a factory, checks if it is not empty
-            } else if (validFactMove) {
-                validFactMove = game->tileFactories[getMouseBoardTilePos(gameWin.boardState).x].tiles[getMouseBoardTilePos(gameWin.boardState).y] != 0;
+            } else if (validTileMove) {
+                // Checks if the choosen color is still available in the factory
+                validTileMove = (game->tileFactories[getMouseBoardTilePos(gameWin.boardState).x].tiles[0] != 0)  &&  (isThereValidMove(game, getMouseBoardTilePos(gameWin.boardState).x, getMouseBoardTilePos(gameWin.boardState).y));
             }
+
+            // NB: Those conditions could fit into a single if statement, but they are obviously separated for readability
         }
 
         int selectedFactory = getMouseBoardTilePos(gameWin.boardState).x;
         int selectedTile = getMouseBoardTilePos(gameWin.boardState).y;
-        int selectedTileColor = game->tileFactories[selectedFactory].tiles[selectedTile]; // Only used for debug
+
+        // DEBUG ONLY
+        int selectedTileColor = game->tileFactories[selectedFactory].tiles[selectedTile];
+        if (selectedFactory == 9) {
+            selectedTileColor = selectedTile;
+        }
 
 
 
 
 
-        // Let the player choose a sideboard row
+        // 2) Let the player choose a sideboard row
         gameWin.boardState = 1;
         printGameHint();
 
@@ -124,7 +138,11 @@ void gameRound(GameStruct* game) {
             validSideMove = getMouseBoardTilePos(gameWin.boardState).x!=-1 && getMouseBoardTilePos(gameWin.boardState).y!=-1 && isValidSideBoardMove(game, selectedFactory, selectedTile, getMouseBoardTilePos(gameWin.boardState).y-1);
         }
 
-        // Moves the tiles from the factory or the center to the sideboard
+
+
+
+
+        // 3) Moves the tiles from the factory or the center to the sideboard
         moveTilesFromFactory(game, selectedFactory, selectedTile, getMouseBoardTilePos(gameWin.boardState).y-1);
 
         int selectedSideRow = getMouseBoardTilePos(gameWin.boardState).y-1; // Only used for debug
@@ -140,22 +158,47 @@ void gameRound(GameStruct* game) {
             printf("Selected tile: %d\n", selectedTile);
             printf("selected tile color: %d\n", selectedTileColor);
             printf("Selected sideboard row: %d\n", selectedSideRow);
+            printf("Remaining center bank tiles: %d\n", game->centerBank.nbTilesRemaining);
         }
 
 
 
 
 
-        // Waits for mouse click to switch to the next player
+        // 5) Waits for mouse click to switch to the next player
         while (mousePressed()!=0);
         while (mousePressed()==0);
 
-
-
-
         // Changes the current player
         game->currentPlayer = (game->currentPlayer + 1) % (PLAYER_COUNT);
+
+        // Checks if the round is over
+        // This check is done here to avoid the round ending early because the center bank is empty
+        roundEndCondition = areFactoriesEmpty(game) && isCenterBankEmpty(game);
     }
+
+
+
+
+    // --- END OF ROUND ---
+
+
+    // Refills the factories
+    for (int i = 0; i < FACTORY_COUNT; i++) {
+        refillFactory(&game->tileFactories[i], &game->bank);
+    }
+
+    // Moves the completed players side board rows to their main board
+    for (int i = 0; i < PLAYER_COUNT; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (isSideBoardRowFull(game->players[i], j)) {
+                moveRowToMain(&game->players[i], j);
+            }
+        }
+    }
+
+    // Updates the scores
+    updateAllScores(game);
 }
 
 
@@ -186,17 +229,85 @@ int isGameOver(GameStruct game) {
 // --- POINT MANAGEMENT FUNCTIONS ---
 
 
-// Calculates the negative points for the player based on the number of overflowing tiles
-int negativePoints(int overflowingTiles) {
-    int points = 0;
+// Update all players scores
+void updateAllScores(GameStruct *game) {
+    for (int i = 0; i < PLAYER_COUNT; i++) {
+        updatedTileScore(&game->players[i], game->players[i].lastTilePos.x, game->players[i].lastTilePos.y);
+        negatePoints(&game->players[i]);
+    }
+}
 
-    if (overflowingTiles >= 1 && overflowingTiles <= 2) {
-        points = -1;
-    } else if (overflowingTiles >= 3 && overflowingTiles <= 5) {
-        points = -2;
-    } else if (overflowingTiles >= 6) {
-        points = -3;
+
+// Calculates the negative points at the end of the round for the player based on the number of overflowing tiles
+void negatePoints(PlayerStruct *player) {
+
+    if (player->overflowTiles >= 1 && player->overflowTiles <= 2) {
+        player->score -= 1;
+    } else if (player->overflowTiles >= 3 && player->overflowTiles <= 5) {
+        player->score -= 2;
+    } else if (player->overflowTiles >= 6) {
+        player->score -= 3;
     }
 
-    return points;
+    if (player->score < 0) {
+        player->score = 0;
+    }
+
+    player->overflowTiles = 0;
+}
+
+
+// Updates the player score based on the latest tile placement
+void updatedTileScore(PlayerStruct* player, int x, int y) {
+
+    // If no tile was placed, returns
+    if (x==-1 || y==-1) {
+        return;
+    }
+
+    // Checks if the row is completed
+    int rowCompleted = 1;
+    for (int i = 0; i < 5; i++) {
+        if (player->boardMatrix[y][i] == 0) {
+            rowCompleted = 0;
+        }
+    }
+
+    // Checks if the column is completed
+    int columnCompleted = 1;
+    for (int i = 0; i < 5; i++) {
+        if (player->boardMatrix[i][x] == 0) {
+            columnCompleted = 0;
+        }
+    }
+
+    // Checks if the color is completed
+    int tileColor = player->boardMatrix[y][x];
+    int colorCompleted = 1;
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++){
+            if (emptyBoardMatrix[i][j] == tileColor && player->boardMatrix[i][j] == 0) {
+                colorCompleted = 0;
+            }
+        }
+    }
+
+    // Adds the points to the player score
+    player->score += 2*rowCompleted + 7*columnCompleted + 10*colorCompleted;
+
+    // Counts the number of connected tiles in each direction (including the placed tile)
+    for (int i = 1; i < 5; i++) {
+        if (x+i < 5 && player->boardMatrix[y][x+i] != 0) {
+            player->score++;
+        }
+        if (x-i >= 0 && player->boardMatrix[y][x-i] != 0) {
+            player->score++;
+        }
+        if (y+i < 5 && player->boardMatrix[y+i][x] != 0) {
+            player->score++;
+        }
+        if (y-i >= 0 && player->boardMatrix[y-i][x] != 0) {
+            player->score++;
+        }
+    }
 }

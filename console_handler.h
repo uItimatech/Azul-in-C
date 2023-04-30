@@ -147,7 +147,7 @@ void printGameUI(GameStruct *game);
 void printMenu();
 
 // Prints the game end menu
-void printEndMenu();
+void printEndMenu(GameStruct game);
 
 // Higlights the given tile while removing previous highlights
 void highlightTile(int x, int y, int tileState);
