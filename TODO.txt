@@ -1,8 +1,5 @@
 A FAIRE: (globalement par ordre de priorité)
 
--Jeton joueur prioritaire (entier représentant quel joueur sera le premier à commencer au prochain tour.
- (Il sera attribué au premier joueur prennant des tuiles depuis le centre de table à chaque tour et prendra la valeur 0 après et tant qu'il n'est pas attribué à nouveu.)
-
 -Calculateur de score (cf. règles, calculé à chaque fin de tour)
 -Détection de fin de jeu (lorsque 2 lignes de tuiles sont remplies sur le plateau d'un joueur. Est déclenchée à chaque fin de tour)
 

@@ -71,6 +71,7 @@ void initPlayer(PlayerStruct* player)
 void gameRound(GameStruct* game) {
 
     game->currentPlayer = game->priorityPlayer;
+    game->priorityPlayer = -1;
 
     // While all factories are not empty
     while (!areFactoriesEmpty(game)){

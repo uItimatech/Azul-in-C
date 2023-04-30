@@ -105,6 +105,11 @@ void moveTilesFromCenterBank(GameStruct* game, int tile, int row) {
             i--;
         }
     }
+
+    // Gives the priority for the next round to the current player if he's the first to pick from the center bank
+    if (game->priorityPlayer == -1) {
+        game->priorityPlayer = game->currentPlayer;
+    }
 }
 
 
