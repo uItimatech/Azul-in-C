@@ -41,7 +41,7 @@ POINT getTMousePos() {
 
     POINT tMousePos;
 
-    tMousePos.x = (mousePos.x*0.883-gameWin.leftMargin) / gameWin.termCharWidth; DEBUG FOR SMALLER SCREENS
+    tMousePos.x = (mousePos.x*0.883-gameWin.leftMargin) / gameWin.termCharWidth; //DEBUG FOR SMALLER SCREENS
     tMousePos.y = (mousePos.y*0.883-gameWin.topMargin)  / gameWin.termCharHeight;
     //tMousePos.x = (mousePos.x-gameWin.leftMargin) / gameWin.termCharWidth;
     //tMousePos.y = (mousePos.y-gameWin.topMargin)  / gameWin.termCharHeight;
@@ -55,7 +55,7 @@ POINT getTMousePos() {
 // boardState is used to determine which board to return the coordinates for
 // 1 for the side board, 2 for the main board, 3 for the factories
 POINT getMouseBoardTilePos(int boardState) {
-    
+
     POINT tMousePos = getTMousePos();
     POINT boardMousePos;
 
@@ -89,7 +89,7 @@ POINT getMouseBoardTilePos(int boardState) {
     } else if (boardState == 3 && tMousePos.x >= factoriesHorizontalOffset+9 && tMousePos.x <= factoriesHorizontalOffset+17*4+11 && tMousePos.y >= factoriesVerticalOffset+11 && tMousePos.y <= factoriesVerticalOffset+17) {
         boardMousePos.x = (tMousePos.x - factoriesHorizontalOffset - gameWin.leftMargin -9)/18 +5;
         boardMousePos.y = (tMousePos.x - (boardMousePos.x-5)*18 - factoriesHorizontalOffset - gameWin.leftMargin  -9)/9 + round((tMousePos.y - factoriesVerticalOffset - gameWin.topMargin - 12)/4)*2;
-    
+
     // Check if the mouse is in the center bank:
     } else if (boardState == 3 && tMousePos.x >= gameWin.consoleWidth/2-57 && tMousePos.x <= gameWin.consoleWidth/2-49 && tMousePos.y >= gameWin.boardVerticalOffset+1 && tMousePos.y <= gameWin.boardVerticalOffset+5*4) {
         boardMousePos.x = 9;
