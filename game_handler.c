@@ -192,13 +192,18 @@ void gameRound(GameStruct* game) {
     for (int i = 0; i < PLAYER_COUNT; i++) {
         for (int j = 0; j < 5; j++) {
             if (isSideBoardRowFull(game->players[i], j)) {
+
+                // Moves the completed row to the main board
                 moveRowToMain(&game->players[i], j);
+                
+                // Updates the scores for each tile placed
+                updatedTileScore(&game->players[i], game->players[i].lastTilePos.x, game->players[i].lastTilePos.y);
+                
             }
         }
+        // Updates the player's negative points
+        negatePoints(&game->players[i]);
     }
-
-    // Updates the scores
-    updateAllScores(game);
 }
 
 
@@ -226,16 +231,8 @@ int isGameOver(GameStruct game) {
 }
 
 
+
 // --- POINT MANAGEMENT FUNCTIONS ---
-
-
-// Update all players scores
-void updateAllScores(GameStruct *game) {
-    for (int i = 0; i < PLAYER_COUNT; i++) {
-        updatedTileScore(&game->players[i], game->players[i].lastTilePos.x, game->players[i].lastTilePos.y);
-        negatePoints(&game->players[i]);
-    }
-}
 
 
 // Calculates the negative points at the end of the round for the player based on the number of overflowing tiles
@@ -268,7 +265,7 @@ void updatedTileScore(PlayerStruct* player, int x, int y) {
     // Checks if the row is completed
     int rowCompleted = 1;
     for (int i = 0; i < 5; i++) {
-        if (player->boardMatrix[y][i] == 0) {
+        if (player->boardMatrix[i][y] == 0) {
             rowCompleted = 0;
         }
     }
@@ -276,13 +273,13 @@ void updatedTileScore(PlayerStruct* player, int x, int y) {
     // Checks if the column is completed
     int columnCompleted = 1;
     for (int i = 0; i < 5; i++) {
-        if (player->boardMatrix[i][x] == 0) {
+        if (player->boardMatrix[x][i] == 0) {
             columnCompleted = 0;
         }
     }
 
     // Checks if the color is completed
-    int tileColor = player->boardMatrix[y][x];
+    int tileColor = player->boardMatrix[x][y];
     int colorCompleted = 1;
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++){
@@ -293,21 +290,24 @@ void updatedTileScore(PlayerStruct* player, int x, int y) {
     }
 
     // Adds the points to the player score
-    player->score += 2*rowCompleted + 7*columnCompleted + 10*colorCompleted;
+    player->score += 1 + 2*rowCompleted + 7*columnCompleted + 10*colorCompleted;
 
     // Counts the number of connected tiles in each direction (including the placed tile)
     for (int i = 1; i < 5; i++) {
-        if (x+i < 5 && player->boardMatrix[y][x+i] != 0) {
+        if (x+i < 5 && player->boardMatrix[x+i][y] != 0) {
+            player->score++;
+        } 
+        if (x-i >= 0 && player->boardMatrix[x-i][y] != 0) {
             player->score++;
         }
-        if (x-i >= 0 && player->boardMatrix[y][x-i] != 0) {
+        if (y+i < 5 && player->boardMatrix[x][y+i] != 0) {
             player->score++;
         }
-        if (y+i < 5 && player->boardMatrix[y+i][x] != 0) {
-            player->score++;
-        }
-        if (y-i >= 0 && player->boardMatrix[y-i][x] != 0) {
+        if (y-i >= 0 && player->boardMatrix[x][y-i] != 0) {
             player->score++;
         }
     }
+
+    player->lastTilePos.x = -1;
+    player->lastTilePos.y = -1;
 }

@@ -76,10 +76,6 @@ void gameRound(GameStruct* game);
 // Tests if the game is over (one player has a full row)
 int isGameOver(GameStruct game);
 
-
-// Update all players scores
-void updateAllScores(GameStruct *game);
-
 // Updates the player score with negative points based on the number of overflowing tiles
 void negatePoints(PlayerStruct* player);
 
