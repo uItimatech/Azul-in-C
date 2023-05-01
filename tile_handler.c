@@ -41,8 +41,8 @@ void refillFactory(TileFactoryStruct* tileFactory, TileBankStruct* bank) {
 
 // Shuffles the tile bank (swap elements randomly)
 void shuffleTileBank(TileBankStruct* bank) {
-    for (int i = 0; i < BANK_TILE_COUNT; i++) {
-        int j = rand() % BANK_TILE_COUNT;
+    for (int i = 0; i < bank->nbTilesRemaining; i++) {
+        int j = rand() % bank->nbTilesRemaining;
         int temp = bank->tiles[i];
         bank->tiles[i] = bank->tiles[j];
         bank->tiles[j] = temp;

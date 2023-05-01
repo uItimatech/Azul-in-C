@@ -206,12 +206,14 @@ void gameRound(GameStruct* game) {
 
                 // Updates the scores for each tile placed
                 updatedTileScore(&game->players[i], game->players[i].lastTilePos.x, game->players[i].lastTilePos.y);
-                
             }
         }
         // Updates the player's negative points
         negatePoints(&game->players[i]);
     }
+
+    // Shuffles the remaining tiles in the tile bank
+    shuffleTileBank(&game->bank);
 }
 
 
