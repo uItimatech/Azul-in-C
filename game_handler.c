@@ -197,7 +197,7 @@ void gameRound(GameStruct* game) {
                 int tilesToAdd = j;
                 
                 for (int k = 0; k < tilesToAdd; k++) {
-                    game->bank.tiles[game->bank.nbTilesRemaining] = game->players[i].sideBoard[j][k];
+                    game->bank.tiles[game->bank.nbTilesRemaining] = game->players[i].sideBoardMatrix[j][k];
                     game->bank.nbTilesRemaining++;
                 }
 

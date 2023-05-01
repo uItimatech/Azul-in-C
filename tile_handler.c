@@ -76,7 +76,7 @@ void moveTilesFromFactory(GameStruct* game, int factory, int tile, int row) {
 
     for (int i = 0; i < FACTORY_TILE_COUNT; i++) {
         if (game->tileFactories[factory].tiles[i] == color) {
-            placeTileInSideBoard(&game->players[game->currentPlayer], color, row);
+            placeTileInSideBoard(&game->players[game->currentPlayer], color, row, game);
         } else {
             game->centerBank.tiles[game->centerBank.nbTilesRemaining] = game->tileFactories[factory].tiles[i];
             game->centerBank.nbTilesRemaining++;
@@ -92,7 +92,7 @@ void moveTilesFromCenterBank(GameStruct* game, int tile, int row) {
     // Moves all tiles of the given color
     for (int i = 0; i < game->centerBank.nbTilesRemaining; i++) {
         if (game->centerBank.tiles[i] == tile) {
-            placeTileInSideBoard(&game->players[game->currentPlayer], tile, row);
+            placeTileInSideBoard(&game->players[game->currentPlayer], tile, row, game);
 
             // Swaps the tile with the last tile in the center bank and removes the last tile
             game->centerBank.tiles[i] = game->centerBank.tiles[game->centerBank.nbTilesRemaining-1];
@@ -140,7 +140,7 @@ void moveRowToMain(PlayerStruct* player, int row) {
 
 
 // Places a tile at the end of the side board, if the row is full, the tile is placed in the overflow
-void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row) {
+void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row, GameStruct* game) {
 
     // Detects how many tiles of this color are already in the row
     int tilesInRow = 0;
@@ -165,6 +165,10 @@ void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row) {
     // If the row is full, the tile is placed in the overflow
     if (tilesInRow == row+1) {
         player->overflowTiles++;
+    
+        // Adds the tile back into the tile bank
+        game->bank.tiles[game->bank.nbTilesRemaining] = tileColor;
+        game->bank.nbTilesRemaining++;
     } else {
         // Places the tile at the end of the row (to the left)
         player->sideBoardMatrix[row][4-tilesInRow] = tileColor;

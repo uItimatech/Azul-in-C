@@ -37,7 +37,7 @@ void moveTilesFromCenterBank(GameStruct* game, int tile, int row);
 void moveRowToMain(PlayerStruct* player, int row);
 
 // Places a tile in the sideBoardMatrix
-void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row);
+void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row, GameStruct* game);
 
 // Tests if the player's side board row is full
 int isSideBoardRowFull(PlayerStruct player, int row);
