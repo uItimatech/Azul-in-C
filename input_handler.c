@@ -41,10 +41,10 @@ POINT getTMousePos() {
 
     POINT tMousePos;
 
-    tMousePos.x = (mousePos.x*0.883-gameWin.leftMargin) / gameWin.termCharWidth; //DEBUG FOR SMALLER SCREENS
-    tMousePos.y = (mousePos.y*0.883-gameWin.topMargin)  / gameWin.termCharHeight;
-    //tMousePos.x = (mousePos.x-gameWin.leftMargin) / gameWin.termCharWidth;
-    //tMousePos.y = (mousePos.y-gameWin.topMargin)  / gameWin.termCharHeight;
+    //tMousePos.x = (mousePos.x*0.883-gameWin.leftMargin) / gameWin.termCharWidth; //DEBUG FOR SMALLER SCREENS
+    //tMousePos.y = (mousePos.y*0.883-gameWin.topMargin)  / gameWin.termCharHeight;
+    tMousePos.x = (mousePos.x-gameWin.leftMargin) / gameWin.termCharWidth;
+    tMousePos.y = (mousePos.y-gameWin.topMargin)  / gameWin.termCharHeight;
 
     return tMousePos;
 }

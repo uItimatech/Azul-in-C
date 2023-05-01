@@ -193,9 +193,17 @@ void gameRound(GameStruct* game) {
         for (int j = 0; j < 5; j++) {
             if (isSideBoardRowFull(game->players[i], j)) {
 
+                // Adds the other tiles back to the tile bank
+                int tilesToAdd = j;
+                
+                for (int k = 0; k < tilesToAdd; k++) {
+                    game->bank.tiles[game->bank.nbTilesRemaining] = game->players[i].sideBoard[j][k];
+                    game->bank.nbTilesRemaining++;
+                }
+
                 // Moves the completed row to the main board
                 moveRowToMain(&game->players[i], j);
-                
+
                 // Updates the scores for each tile placed
                 updatedTileScore(&game->players[i], game->players[i].lastTilePos.x, game->players[i].lastTilePos.y);
                 
