@@ -145,16 +145,6 @@ void placeTileInSideBoard(PlayerStruct* player, int tileColor, int row, GameStru
     // Detects how many tiles of this color are already in the row
     int tilesInRow = 0;
 
-    /*while (player->sideBoardMatrix[row][4-tilesInRow] == tileColor && tilesInRow<5) tilesInRow++;
-
-    // Places the tile in the row
-    if (tilesInRow < 5) {
-        player->boardMatrix[row][4-tilesInRow] = tileColor;
-        tilesInRow++;
-    } else {
-        player->overflowTiles++;
-    }*/
-
     // Calculates the number of tiles in the row
     for (int i = 0; i < 5; i++) {
         if (player->sideBoardMatrix[row][i] == tileColor) {

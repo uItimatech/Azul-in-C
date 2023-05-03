@@ -28,10 +28,6 @@
 *.so.*
 *.dylib
 
-# CodeBlocks project files
-*.cbp
-*.depend
-
 # Visual Studio Code project files
 .vscode/
 

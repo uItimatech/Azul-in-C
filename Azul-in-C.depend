@@ -1,0 +1,54 @@
+# depslib dependency file v1.0
+1682892904 source:c:\users\ultimatech\documents\github\azul-in-c\console_handler.c
+	<stdio.h>
+	<windows.h>
+	<math.h>
+	"console_handler.h"
+	"game_handler.h"
+	"input_handler.h"
+	"tile_handler.h"
+
+1682888633 c:\users\ultimatech\documents\github\azul-in-c\console_handler.h
+	<stdio.h>
+	<windows.h>
+	"game_handler.h"
+
+1682940113 c:\users\ultimatech\documents\github\azul-in-c\game_handler.h
+	<windows.h>
+
+1682863572 c:\users\ultimatech\documents\github\azul-in-c\input_handler.h
+
+1682878324 c:\users\ultimatech\documents\github\azul-in-c\tile_handler.h
+	"game_handler.h"
+
+1682940735 source:c:\users\ultimatech\documents\github\azul-in-c\game_handler.c
+	<stdio.h>
+	<math.h>
+	"game_handler.h"
+	"tile_handler.h"
+	"console_handler.h"
+	"input_handler.h"
+
+1682941068 source:c:\users\ultimatech\documents\github\azul-in-c\input_handler.c
+	<windows.h>
+	<stdio.h>
+	<math.h>
+	"input_handler.h"
+	"console_handler.h"
+
+1682892523 source:c:\users\ultimatech\documents\github\azul-in-c\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<math.h>
+	<unistd.h>
+	"console_handler.h"
+	"tile_handler.h"
+	"game_handler.h"
+	"input_handler.h"
+
+1682886116 source:c:\users\ultimatech\documents\github\azul-in-c\tile_handler.c
+	<stdio.h>
+	<stdlib.h>
+	"tile_handler.h"
+
