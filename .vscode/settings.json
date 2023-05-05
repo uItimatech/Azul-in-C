@@ -40,6 +40,7 @@
   "files.associations": {
     "game_handler.h": "c",
     "input_handler.h": "c",
-    "math.h": "c"
+    "math.h": "c",
+    "time.h": "c"
   }
 }

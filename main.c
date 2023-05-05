@@ -5,6 +5,9 @@
 #include <math.h>
 #include <unistd.h>
 
+#define _WIN32_WINNT 0x0500
+#include <windows.h>
+
 // Project headers
 #include "console_handler.h"
 #include "tile_handler.h"
